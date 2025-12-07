@@ -2,16 +2,16 @@ import React from 'react';
 import { Head } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import { ScrollToTop } from '@/Components/ScrollToTop';
-import { useTheme } from '@/Contexts/ThemeContext';
 import Footer from '@/Components/Footer';
 
 interface MainLayoutProps {
     children: React.ReactNode;
     title?: string;
+    isDark:boolean;
 }
 
-export default function MainLayout({ children, title = 'Home' }: MainLayoutProps) {
-    const { isDark } = useTheme();
+
+export default function MainLayout({ children, title = 'Home', isDark }: MainLayoutProps) {
 
     return (
         <div className={isDark ? 'dark' : ''}>
@@ -33,7 +33,7 @@ export default function MainLayout({ children, title = 'Home' }: MainLayoutProps
 
                 {/* Content */}
                 <div className="relative z-10">
-                    <Navbar />
+                    <Navbar isDark={isDark} />
                     <main className="transition-colors duration-300">
                         {children}
                     </main>

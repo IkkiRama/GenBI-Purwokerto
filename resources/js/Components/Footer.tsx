@@ -83,22 +83,36 @@ const Footer = () => (
           <h3 className="text-lg font-semibold">Contact Us</h3>
           <ul className="space-y-4">
             <li>
-              <a
-                href="mailto:genbipurwokerto22@gmail.com"
-                className="flex items-center group space-x-3 text-blue-100 hover:text-white transition duration-300"
-              >
-                <Mail className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm sm:text-base">genbipurwokerto22@gmail.com</span>
-              </a>
+                <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=medeksgenbi@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center group space-x-3 text-blue-100 hover:text-white transition duration-300"
+                >
+                    <Mail className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+                    <span className="text-sm sm:text-base">medeksgenbi@gmail.com</span>
+                </a>
+
             </li>
             <li>
-              <a
-                href="tel:+6289667443651"
+              <div
                 className="flex items-center group space-x-3 text-blue-100 hover:text-white transition duration-300"
               >
                 <Phone className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm sm:text-base">+62 89667443651</span>
-              </a>
+                <div className="flex flex-col">
+                    <a href="http://wa.me/+6282133320489" target="_blank" rel="noopener noreferrer">
+                        <span className="text-sm sm:text-base">Unsoed : +62 821-3332-0489 (Rifki)</span>
+                    </a>
+
+                    <a href="http://wa.me/+6288980289823" target="_blank" rel="noopener noreferrer">
+                        <span className="text-sm sm:text-base">UIN : +62 889-8028-9823 (Anis)</span>
+                    </a>
+
+                    <a href="http://wa.me/+6289646437334" target="_blank" rel="noopener noreferrer">
+                        <span className="text-sm sm:text-base">UMP : +62 896-4643-7334 (Dinda)</span>
+                    </a>
+                </div>
+              </div>
             </li>
             <li>
               <a

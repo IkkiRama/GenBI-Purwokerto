@@ -32,7 +32,7 @@ export const ScrollToTop = () => {
                     exit={{ opacity: 0, scale: 0.3 }}
                     onClick={scrollToTop}
                     className={`
-                        fixed bottom-[25px] lg:bottom-[75px] right-4 md:bottom-8 md:right-8 z-50
+                        fixed bottom-[25px] lg:bottom-[25px] right-4 md:bottom-8 md:right-8 z-50
                         p-3 rounded-full shadow-lg cursor-pointer
                         transition-all duration-300 ease-in-out group
                         ${isDark

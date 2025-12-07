@@ -11,7 +11,6 @@ import { Head } from '@inertiajs/react';
 
 
 export default function GenBIPoint() {
-    const { isDark } = useTheme();
     const [openLightboxDeputi, setOpenLightboxDeputi] = useState(false);
     const [openLightboxStaff, setOpenLightboxStaff] = useState(false);
     const [SOTMDeputi, setSOTMDeputi] = useState([]);
@@ -19,6 +18,22 @@ export default function GenBIPoint() {
     const [lightboxDeputi, setLightboxDeputi] = useState([]);
     const [lightboxStaff, setLightboxStaff] = useState([]);
     const [error, setError] = useState(null);
+
+    const themeHook = useTheme();
+    const [isDark, setIsDark] = useState(() => {
+    if (themeHook?.isDark !== undefined) return themeHook.isDark;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (stored) return stored === 'dark';
+    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    });
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeHook?.setTheme?.(isDark ? 'dark' : 'light');
+    }, [isDark]);
 
     useEffect(() => {
     // Fungsi untuk fetch data
@@ -102,7 +117,7 @@ export default function GenBIPoint() {
 
 
     if (SOTMDeputi.length > 0 && SOTMStaff.length > 0) return (
-        <MainLayout title="GenBI Point">
+        <MainLayout isDark={isDark} title="GenBI Point">
             <Head>
                 <meta name="description" content="GenBI Point adalah bagian dari GenBI Purwokerto yang mendukung generasi muda untuk berprestasi dan berkontribusi melalui berbagai kegiatan sosial dan edukasi. Temukan lebih banyak tentang Deputi dan Staff kami." />
                 <meta name="keywords" content="genbi point, genbi purwokerto, deputi, staff, kontribusi sosial, kegiatan edukasi, generasi muda berprestasi" />
@@ -116,6 +131,22 @@ export default function GenBIPoint() {
                 <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
                 <meta name="twitter:card" content="summary_large_image" />
             </Head>
+
+
+            {/* Theme toggle */}
+            <div className="fixed right-5 bottom-24 z-50">
+                <button
+                aria-label="Toggle theme"
+                aria-pressed={isDark}
+                onClick={() => setIsDark((s) => !s)}
+                className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+                <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
+                </div>
+                </button>
+            </div>
 
             <section className="bg-white flex justify-center">
                 <HeroGenBIPoint />

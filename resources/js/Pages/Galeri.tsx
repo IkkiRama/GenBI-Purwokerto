@@ -79,7 +79,7 @@ const Galeri = () => {
     if (error) return <p>Error: {error}</p>;
 
   if (galeri.length > 0) return (
-    <MainLayout title="Galeri">
+    <MainLayout isDark={isDark} title="Galeri">
         <Head>
             <meta name="description" content="Lihat galeri foto dan video dokumentasi kegiatan GenBI Purwokerto, yang memperlihatkan berbagai momen berharga dari acara dan program yang telah kami jalankan." />
             <meta name="keywords" content="galeri, foto, video, dokumentasi, kegiatan genbi, acara genbi purwokerto" />
@@ -93,6 +93,24 @@ const Galeri = () => {
             <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+
+
+        {/* Theme toggle */}
+        <div className="fixed right-5 bottom-24 z-50">
+            <button
+            aria-label="Toggle theme"
+            aria-pressed={isDark}
+            onClick={() => setIsDark((s) => !s)}
+            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+            <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+            <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
+            </div>
+            </button>
+        </div>
+
+
         <div className="lg:py-0 py-20 px-4 relative min-h-screen lg:pt-28 lg:pb-20 flex flex-col items-center">
             <div className="container mx-auto relative z-10">
                 <motion.div {...fadeInUpAnimation} className="text-center mb-8">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { motion } from 'framer-motion';
 import { FaInstagram, FaYoutube, FaMapMarkerAlt, FaEnvelope, FaPhone, FaTiktok } from 'react-icons/fa';
@@ -6,7 +6,6 @@ import { useTheme } from '@/Hooks/useTheme';
 import { Head } from '@inertiajs/react';
 
 const Contact = () => {
-  const { isDark } = useTheme();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -15,6 +14,22 @@ const Contact = () => {
     const [email, setEmail] = useState("");
     const [judul, setJudul] = useState("");
     const [pesan, setPesan] = useState("");
+
+    const themeHook = useTheme();
+    const [isDark, setIsDark] = useState(() => {
+    if (themeHook?.isDark !== undefined) return themeHook.isDark;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (stored) return stored === 'dark';
+    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    });
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeHook?.setTheme?.(isDark ? 'dark' : 'light');
+    }, [isDark]);
 
 
 
@@ -63,7 +78,7 @@ const Contact = () => {
   };
 
   return (
-    <MainLayout title="Contact">
+    <MainLayout title="Contact" isDark={isDark}>
         <Head>
             <meta name="description" content="Hubungi GenBI Purwokerto untuk informasi lebih lanjut mengenai program, kegiatan, dan kontribusi kami dalam mendukung pendidikan dan pemberdayaan masyarakat." />
             <meta name="keywords" content="kontak, hubungi genbi purwokerto, informasi genbi, program genbi purwokerto, beasiswa bank indonesia" />
@@ -77,6 +92,22 @@ const Contact = () => {
             <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+
+
+        {/* Theme toggle */}
+        <div className="fixed right-5 bottom-24 z-50">
+            <button
+            aria-label="Toggle theme"
+            aria-pressed={isDark}
+            onClick={() => setIsDark((s) => !s)}
+            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+            <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+            <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
+            </div>
+            </button>
+        </div>
 
       <div className={`min-h-screen ${darkModeClasses.bg}`}>
         <div className="container mx-auto px-4 py-20">

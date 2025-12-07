@@ -9,6 +9,7 @@
     <meta property="og:site_name" content="GenBI Purwokerto"/>
     <meta name="author" content="GenBI Purwokerto,Rifki Romadhan,Ahmad Rian">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="index,follow">
     {{-- <meta http-equiv="Content-Security-Policy" content="script-src 'none'"> --}}
 
@@ -61,7 +62,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <script src="https://website-widgets.pages.dev/dist/sienna.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility@latest/dist/sienna-accessibility.umd.js" defer></script>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRNT4GSX"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ThemeProvider } from './Contexts/ThemeContext';
+import { BrowserRouter } from 'react-router-dom';
 
 const appName = import.meta.env.VITE_APP_NAME || 'GenBI Purwokerto';
 
@@ -22,9 +23,11 @@ createInertiaApp({
         document.documentElement.style.setProperty('color-scheme', initialTheme);
 
         root.render(
-            <ThemeProvider>
-                <App {...props} />
-            </ThemeProvider>
+            <BrowserRouter>
+                <ThemeProvider>
+                    <App {...props} />
+                </ThemeProvider>
+            </BrowserRouter>
         );
     },
     progress: {

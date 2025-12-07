@@ -3,21 +3,21 @@
 @tailwind utilities;
 
 * {
-    font-family: "figtree","DM Sans", sans-serif;
+    font-family: "figtree", "DM Sans", sans-serif;
     font-optical-sizing: auto;
 }
 
 *::-webkit-scrollbar {
-  width: 7px;
+    width: 7px;
 }
 
 *::-webkit-scrollbar-track {
-  background: #fff;
+    background: #fff;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #025496;
-  /* border-radius: 5px; */
+    background-color: #025496;
+    /* border-radius: 5px; */
 }
 
 .animate-scroll-to-t {
@@ -56,6 +56,22 @@
     }
 }
 
-.content-artikel *{
-    margin:25px 0;
+.content-artikel * {
+    margin: 25px 0;
+}
+
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.animate-shimmer {
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
 }

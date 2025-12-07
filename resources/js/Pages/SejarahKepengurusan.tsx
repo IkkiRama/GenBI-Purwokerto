@@ -12,9 +12,24 @@ const fadeInUpAnimation = {
 };
 
 const SejarahKepengurusan = () => {
-    const { isDark } = useTheme();
     const [sejarahKepengurusan, setSejarahKepengurusan] = useState([]);
     const [error, setError] = useState(null);
+
+    const themeHook = useTheme();
+    const [isDark, setIsDark] = useState(() => {
+    if (themeHook?.isDark !== undefined) return themeHook.isDark;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (stored) return stored === 'dark';
+    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    });
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeHook?.setTheme?.(isDark ? 'dark' : 'light');
+    }, [isDark]);
 
 
     const fetchData = async () => {
@@ -76,7 +91,7 @@ const SejarahKepengurusan = () => {
     if (error) return <p>Error: {error}</p>;
 
   if (sejarahKepengurusan.length > 0) return (
-    <MainLayout title="SejarahKepengurusan">
+    <MainLayout isDark={isDark} title="SejarahKepengurusan">
         <Head>
             <meta name="description" content="Pelajari sejarah kepengurusan GenBI Purwokerto dan bagaimana organisasi ini berkembang dalam memberikan kontribusi kepada masyarakat." />
             <meta name="keywords" content="sejarah kepengurusan, genbi purwokerto, perkembangan organisasi, kontribusi genbi" />
@@ -90,6 +105,22 @@ const SejarahKepengurusan = () => {
             <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+
+
+        {/* Theme toggle */}
+        <div className="fixed right-5 bottom-24 z-50">
+            <button
+            aria-label="Toggle theme"
+            aria-pressed={isDark}
+            onClick={() => setIsDark((s) => !s)}
+            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+            <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+            <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
+            </div>
+            </button>
+        </div>
 
         <div className="lg:py-0 py-20 px-4 relative min-h-screen lg:pt-28 lg:pb-20 flex flex-col items-center">
             <div className="container mx-auto relative">

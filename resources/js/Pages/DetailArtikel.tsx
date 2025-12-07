@@ -8,6 +8,7 @@ import { Head, Link } from "@inertiajs/react";
 
 import ShareButton from "@/Components/ShareButton";
 import { getRandomColor } from "@/Utils/getRandomColor";
+import { useTheme } from "@/Hooks/useTheme";
 
 
 interface DetailArtikelProps {
@@ -33,6 +34,22 @@ const DetailArtikel = React.FC<DetailArtikelProps> = ({slug}) => {
     const [successMessage, setSuccessMessage] = useState("");
     //@ts-ignore
     const [warnaProfile, setWarnaProfile] = useState(getRandomColor());
+
+    const themeHook = useTheme();
+    const [isDark, setIsDark] = useState(() => {
+    if (themeHook?.isDark !== undefined) return themeHook.isDark;
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
+    if (stored) return stored === 'dark';
+    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+    });
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeHook?.setTheme?.(isDark ? 'dark' : 'light');
+    }, [isDark]);
 
 
     const ArticleContent = ({ content }) => {
@@ -166,9 +183,7 @@ const DetailArtikel = React.FC<DetailArtikelProps> = ({slug}) => {
     }
 
   if (artikel !== undefined && artikelRandom.length > 0) return (
-    <MainLayout title={
-        //@ts-ignore
-        artikel.title ? artikel.title : "Detail Artikel"}>
+    <MainLayout isDark={isDark} title={artikel.title ? artikel.title : "Detail Artikel"}>
 
         <Head>
             <meta name="description" content={
@@ -195,6 +210,22 @@ const DetailArtikel = React.FC<DetailArtikelProps> = ({slug}) => {
                 artikel.thumbnail ? `https://data.genbipurwokerto.com/storage/${artikel.thumbnail}` : "../images/NO IMAGE AVAILABLE.jpg"} />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
+
+
+        {/* Theme toggle */}
+        <div className="fixed right-5 bottom-24 z-50">
+            <button
+            aria-label="Toggle theme"
+            aria-pressed={isDark}
+            onClick={() => setIsDark((s) => !s)}
+            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+            <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+            <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
+            </div>
+            </button>
+        </div>
 
 
         <main className="container mx-auto pb-20">
