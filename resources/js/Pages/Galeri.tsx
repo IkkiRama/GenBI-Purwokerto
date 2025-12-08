@@ -1,157 +1,203 @@
 import MainLayout from '@/Layouts/MainLayout';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTheme } from '@/Hooks/useTheme';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaCalendar, FaMapMarkedAlt } from 'react-icons/fa';
 import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
 
-const fadeInUpAnimation = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 },
-  viewport: { once: true }
+/* ================= ANIMATION ================= */
+const pageTransition = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -16 },
+  transition: { duration: 0.35, ease: 'easeOut' }
 };
 
+const listAnimation = {
+  initial: { opacity: 0, scale: 0.96 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.96 },
+  transition: { duration: 0.25 }
+};
+
+/* ================= SKELETON SHIMMER ================= */
+const SkeletonCard = ({ isDark }) => (
+  <div className={`p-4 rounded-xl shadow-md animate-pulse ${
+    isDark ? 'bg-gray-800' : 'bg-white'
+  }`}>
+    <div
+      className={`w-full h-[220px] rounded-lg mb-4 ${
+        isDark
+          ? 'bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 bg-[length:200%_100%] animate-shimmer'
+          : 'bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer'
+      }`}
+    />
+    <div className="h-4 w-3/4 rounded mb-2 bg-gray-400/40" />
+    <div className="h-3 w-full rounded mb-3 bg-gray-400/30" />
+    <div className="h-3 w-2/3 rounded bg-gray-400/30" />
+  </div>
+);
+
+/* ================= MAIN PAGE ================= */
 const Galeri = () => {
-    const { isDark } = useTheme();
-    const [galeri, setGaleri] = useState([]);
-    const [error, setError] = useState(null);
+  const [galeri, setGaleri] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
 
+  const reduceMotion = useReducedMotion();
+  const themeHook = useTheme();
+  const [isDark, setIsDark] = useState(themeHook?.isDark ?? false);
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
+  }, [isDark]);
+
+  /* ================= FETCH ================= */
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://data.genbipurwokerto.com/api/galeri`
-        );
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-            setGaleri(result.data)
-        } else {
-            setError(result.message); // Tangkap error jika ada
-            console.error("Error fetching data:", result.message);
-        }
-
-      } catch (error) {
-        setError(error.message); // Tangkap error jika ada
-        console.error("Fetch error:", error);
+        const res = await fetch(`${BASE_URL}/api/galeri`);
+        if (!res.ok) throw new Error('Gagal memuat galeri');
+        const json = await res.json();
+        setGaleri(json.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    useEffect(() => {
-        fetchData()
-    }, []);
+    fetchData();
+  }, []);
 
-    const styles = {
-        gradient: isDark
-            ? 'bg-gradient-to-b from-transparent via-gray-800/30 to-transparent'
-            : 'bg-gradient-to-b from-transparent via-blue-50/30 to-transparent',
-        text: isDark ? 'text-white' : 'text-gray-900',
-        container: isDark
-            ? 'bg-gray-800/70 backdrop-blur-sm'
-            : 'bg-white/70 backdrop-blur-sm',
-        button: isDark
-            ? 'bg-blue-600 text-white hover:bg-blue-500'
-            : 'bg-blue-600 text-white hover:bg-blue-700'
-    };
+  /* ================= FILTER ================= */
+  const years = useMemo(
+    () => ['all', ...new Set(galeri.map(item => new Date(item.waktu).getFullYear()))],
+    [galeri]
+  );
 
-    if (galeri.length <= 0) return(
-        <div className='flex justify-center items-center flex-col fixed z-[999] right-[50%] top-[50%] translate-x-[50%] -translate-y-[50%] w-screen h-screen bg-white gap-3'>
-            <img
-                src='./images/logo.png'
-                className="lg:w-1/4 w-[80%] h-[40%]"
-                alt='icon-splash'
-            />
-            <div className="flex items-center justify-center">
-                <img src="./images/Loader.svg" alt="loader image" className='w-10 mr-5' />
-                <p>Sedang Memuat Data</p>
-            </div>
-        </div>
+  const filteredData = useMemo(() => {
+    if (filter === 'all') return galeri;
+    return galeri.filter(
+      item => new Date(item.waktu).getFullYear().toString() === filter
     );
+  }, [filter, galeri]);
 
-    if (error) return <p>Error: {error}</p>;
-
-  if (galeri.length > 0) return (
+  return (
     <MainLayout isDark={isDark} title="Galeri">
-        <Head>
-            <meta name="description" content="Lihat galeri foto dan video dokumentasi kegiatan GenBI Purwokerto, yang memperlihatkan berbagai momen berharga dari acara dan program yang telah kami jalankan." />
-            <meta name="keywords" content="galeri, foto, video, dokumentasi, kegiatan genbi, acara genbi purwokerto" />
-            <meta property="og:title" content="Galeri - GenBI Purwokerto" />
-            <meta property="og:description" content="Lihat galeri foto dan video dokumentasi kegiatan GenBI Purwokerto." />
-            <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
-            <meta property="og:url" content="https://genbipurwokerto.com/galeri" />
-            <meta property="og:type" content="website" />
-            <meta name="twitter:title" content="Galeri - GenBI Purwokerto" />
-            <meta name="twitter:description" content="Lihat galeri foto dan video dokumentasi kegiatan GenBI Purwokerto." />
-            <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
-            <meta name="twitter:card" content="summary_large_image" />
-        </Head>
+      <Head>
+        <title>Galeri - GenBI Purwokerto</title>
+        <meta
+          name="description"
+          content="Galeri dokumentasi kegiatan GenBI Purwokerto dalam berbagai program sosial, edukasi, dan pengabdian."
+        />
+        <link rel="canonical" href="https://genbipurwokerto.com/galeri" />
+        <meta property="og:title" content="Galeri - GenBI Purwokerto" />
+        <meta property="og:description" content="Dokumentasi kegiatan GenBI Purwokerto." />
+        <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
 
+      <AnimatePresence mode="wait">
+        <motion.div {...(!reduceMotion ? pageTransition : {})}>
 
-        {/* Theme toggle */}
-        <div className="fixed right-5 bottom-24 z-50">
-            <button
+          {/* THEME TOGGLE */}
+          <button
+            onClick={() => setIsDark(!isDark)}
             aria-label="Toggle theme"
-            aria-pressed={isDark}
-            onClick={() => setIsDark((s) => !s)}
-            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-            <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-            <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
-                <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
-            </div>
-            </button>
-        </div>
+            className="fixed right-5 bottom-24 z-50 px-4 py-2 rounded-full shadow bg-white/80 dark:bg-gray-800/80 dark:text-white text-gray-900 font-semibold"
+          >
+            {isDark ? '🌞 Light' : '🌙 Dark'}
+          </button>
 
+          {/* HEADER */}
+          <div className="pt-28 pb-8 text-center">
+            <h1 className="text-3xl font-bold">Galeri Kegiatan GenBI</h1>
+            <p className="opacity-80 mt-2">Dokumentasi berbagai kegiatan GenBI Purwokerto</p>
+          </div>
 
-        <div className="lg:py-0 py-20 px-4 relative min-h-screen lg:pt-28 lg:pb-20 flex flex-col items-center">
-            <div className="container mx-auto relative z-10">
-                <motion.div {...fadeInUpAnimation} className="text-center mb-8">
-                    <h1 className={`text-2xl sm:text-3xl font-bold ${styles.text}`}>Galeri Kegiatan GenBI</h1>
-                    <p className={`mt-3 text-base sm:text-lg ${styles.text} opacity-80`}>
-                    Kumpulan kegiatan dari GenBI Purwokerto
-                    </p>
-                    <div className="w-16 h-1 bg-blue-500 mx-auto mt-3" />
+          {/* FILTER TAB */}
+          <div className="flex justify-center flex-wrap gap-2 mb-10" role="tablist">
+            {years.map(year => (
+              <button
+                key={year}
+                role="tab"
+                aria-selected={filter === year}
+                onClick={() => setFilter(year.toString())}
+                className={`px-4 py-2 rounded-full text-sm transition font-semibold ${
+                  filter === year.toString()
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 dark:text-white'
+                }`}
+              >
+                {year === 'all' ? 'Semua' : year}
+              </button>
+            ))}
+          </div>
+
+          {/* GRID CONTENT */}
+          <div className="max-w-[1700px] mx-auto px-4 pb-24" aria-busy={loading}>
+            <AnimatePresence mode="wait">
+              {loading ? (
+                <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+                  {[...Array(6)].map((_, i) => (
+                    <SkeletonCard key={i} isDark={isDark} />
+                  ))}
                 </motion.div>
-            </div>
-
-            <div className="grid lg:grid-cols-3 grid-cols-1 md:gap-10 items-center lg:px-10 px-3 max-w-[1700px]">
-                {galeri.map((item, index) => (
-                    <Link key={index} href={`/galeri/${item.slug}`} className="p-4 bg-white rounded-lg shadow-sm">
+              ) : error ? (
+                <p className="text-center text-red-500" aria-live="polite">{error}</p>
+              ) : (
+                <motion.div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+                  {filteredData.map((item, index) => (
+                    <motion.div key={index} {...listAnimation}>
+                      <Link
+                        href={`/galeri/${item.slug}`}
+                        className={`block p-4 rounded-xl shadow-sm transition hover:scale-[1.02] ${
+                          isDark ? 'bg-gray-800/70 text-white' : 'bg-white text-gray-900'
+                        }`}
+                      >
                         <img
-                        src={item.thumbnail ? `https://data.genbipurwokerto.com/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"}
-                        alt={item.title}
-                        className="w-full h-[200px] md:h-[270px] bg-cover rounded-lg mb-8"
+                          loading="lazy"
+                          src={
+                            item.thumbnail
+                              ? `${BASE_URL}/storage/${item.thumbnail}`
+                              : '/images/NO IMAGE AVAILABLE.jpg'
+                          }
+                          alt={item.title}
+                          className="w-full h-[230px] object-cover rounded-lg mb-4"
                         />
-                        <h2 className={`text-lg font-bold mb-2`}>{item.title}</h2>
 
-                        <p className="text-gray-700 dark:text-gray-300 lg:text-base md:text-sm text-[12px] line-clamp-3">{item.deskripsi}</p>
+                        <h2 className="text-lg font-bold mb-2">{item.title}</h2>
 
-                        <div className="mt-5 md:flex gap-10">
-                            <p className="flex md:mb-0 mb-2 md:text-base text-[12px] gap-2 text-sm text-gray-600 dark:text-gray-400 items-center">
-                                <FaMapMarkedAlt />
-                                <span>Tempat : {item.tempat}</span>
-                            </p>
-                            <p className="flex gap-2 text-sm text-gray-600 dark:text-gray-400 items-center">
-                                <FaCalendar />
-                                <span>{changeDate(new Date(item.waktu))}</span>
-                            </p>
+                        <p className="text-sm opacity-80 line-clamp-3">
+                          {item.deskripsi}
+                        </p>
+
+                        <div className="mt-4 flex flex-col gap-2 text-xs opacity-70">
+                          <span className="flex items-center gap-2">
+                            <FaMapMarkedAlt /> {item.tempat}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <FaCalendar /> {changeDate(new Date(item.waktu))}
+                          </span>
                         </div>
-                    </Link>
-                ))}
-            </div>
-        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </MainLayout>
   );
 };
-
-
 
 export default Galeri;

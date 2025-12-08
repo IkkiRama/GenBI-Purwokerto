@@ -1,12 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/Hooks/useTheme';
 import { Link } from '@inertiajs/react';
 
 
 
-const ProfileCard: React.FC<{ profile, index: number }> = ({ profile, index }) => {
-  const { isDark } = useTheme();
+const ProfileCard: React.FC<{ profile, index: number, isDark:boolean }> = ({ profile, index, isDark }) => {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
 
   if (profile.type === "president") {
     return (
@@ -25,7 +24,7 @@ const ProfileCard: React.FC<{ profile, index: number }> = ({ profile, index }) =
 
             <div className="relative h-[460px] overflow-hidden group-hover:scale-105 transition-transform duration-500">
                 <img
-                src={`https://data.genbipurwokerto.com/storage/${profile.foto}`}
+                src={BASE_URL+`/storage/${profile.foto}`}
                 alt={profile.nama_lengkap}
                 className="w-full h-full object-cover object-center"
                 />
@@ -75,7 +74,7 @@ const ProfileCard: React.FC<{ profile, index: number }> = ({ profile, index }) =
 
           <div className="relative h-[460px] overflow-hidden group-hover:scale-105 transition-transform duration-500">
             <img
-              src={`https://data.genbipurwokerto.com/storage/${profile.foto}`}
+              src={BASE_URL+`/storage/${profile.foto}`}
               alt={profile.nama_lengkap}
               className="w-full h-full object-cover object-center"
             />
