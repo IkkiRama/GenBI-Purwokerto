@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaCalendar, FaMapMarkedAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import MainLayout from '@/Layouts/MainLayout';
@@ -13,6 +13,7 @@ interface DetailGaleriProps {
   slug: string;
 }
 
+//@ts-ignore
 const shimmer = (w: number, h: number) => `data:image/svg+xml;utf8,${encodeURIComponent(
   `<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" version="1.1"><rect width="100%" height="100%" fill="#f3f3f3" /><defs><linearGradient id="g"><stop stop-color="#f3f3f3" offset="0%" /><stop stop-color="#ecebeb" offset="50%" /><stop stop-color="#f3f3f3" offset="100%" /></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)" /><animate attributeName="x" from="-100%" to="100%" dur="1.2s" repeatCount="indefinite"/></svg>`)};`
 

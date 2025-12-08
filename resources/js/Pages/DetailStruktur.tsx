@@ -256,6 +256,7 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
                             <p className="text-gray-700 dark:text-gray-300">Belum ada anggota yang terdaftar untuk bidang ini.</p>
                           </div>
                         ) : (
+                            //@ts-ignore
                           Object.keys(groupedMembers).map((departemen, idx) => (
                             <motion.div key={departemen} className="mb-8" variants={itemVariant as any}>
                               <h4 className="text-lg font-semibold mb-3">{departemen}</h4>
@@ -263,8 +264,8 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
                                 {groupedMembers[departemen].map((m) => (
                                   <article key={m.id} className="p-4 rounded-lg border dark:border-gray-800 bg-white dark:bg-gray-850 shadow-sm">
                                     <div className="flex items-center gap-4">
-                                        <p className="font-semibold">{m.nama}</p>
-                                        {m.jabatan && <p className="text-sm text-gray-500 dark:text-gray-400">{m.jabatan}</p>}
+                                        <p className="font-semibold text-gray-800">{m.nama}</p>
+                                        {m.jabatan && <p className="text-sm text-gray-800">{m.jabatan}</p>}
                                     </div>
                                   </article>
                                 ))}

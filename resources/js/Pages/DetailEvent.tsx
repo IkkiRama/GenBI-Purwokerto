@@ -1,5 +1,5 @@
 import MainLayout from '@/Layouts/MainLayout';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaCalendar, FaMapMarkedAlt } from 'react-icons/fa';
 import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';

@@ -137,22 +137,31 @@ const Contact = () => {
               <div className="flex items-center gap-3 mb-4">
                 <FaEnvelope className="text-blue-500 text-xl" />
                 <a
-                  href="mailto:genbipurwokerto22@gmail.com"
-                  className={`hover:text-blue-500 transition-colors ${darkModeClasses.textSecondary}`}
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=medeksgenbi@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center group space-x-3 text-blue-100 hover:text-white transition duration-300"
                 >
-                  genbipurwokerto22@gmail.com
+                    <span className={`text-sm sm:text-base ${darkModeClasses.textSecondary}`}>medeksgenbi@gmail.com</span>
                 </a>
               </div>
 
               {/* Phone */}
               <div className="flex items-center gap-3">
                 <FaPhone className="text-blue-500 text-xl" />
-                <a
-                  href="tel:+6289667443651"
-                  className={`hover:text-blue-500 transition-colors ${darkModeClasses.textSecondary}`}
-                >
-                  +62 89667443651
-                </a>
+                <div className="flex flex-col">
+                    <a href="http://wa.me/+6282133320489" target="_blank" rel="noopener noreferrer">
+                        <span className={`text-sm sm:text-base ${darkModeClasses.textSecondary}`}>Unsoed : +62 821-3332-0489 (Rifki)</span>
+                    </a>
+
+                    <a href="http://wa.me/+6288980289823" target="_blank" rel="noopener noreferrer">
+                        <span className={`text-sm sm:text-base ${darkModeClasses.textSecondary}`}>UIN : +62 889-8028-9823 (Anis)</span>
+                    </a>
+
+                    <a href="http://wa.me/+6289646437334" target="_blank" rel="noopener noreferrer">
+                        <span className={`text-sm sm:text-base ${darkModeClasses.textSecondary}`}>UMP : +62 896-4643-7334 (Dinda)</span>
+                    </a>
+                </div>
               </div>
 
               {/* Social Media */}
@@ -164,7 +173,7 @@ const Contact = () => {
                 <a href="https://www.youtube.com/@genbipurwokerto1177" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="p-3 rounded-full bg-white border border-slate-400 text-2xl text-[#FF0000] hover:opacity-80 transition-opacity">
                   <FaYoutube />
                 </a>
-                <a href="https://www.tiktok.com/@genbipurwokerto" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className={`p-3 rounded-full bg-white border border-slate-400 text-2xl hover:opacity-80 transition-opacity ${isDark ? 'text-white' : 'text-[#000000]'}`}>
+                <a href="https://www.tiktok.com/@genbipurwokerto" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className={`p-3 rounded-full bg-white border border-slate-400 text-2xl hover:opacity-80 transition-opacity text-[#000000]`}>
                   <FaTiktok />
                 </a>
               </div>

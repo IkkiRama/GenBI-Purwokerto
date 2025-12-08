@@ -61,6 +61,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   const [error, setError] = useState<string | null>(null);
   const [errorRandomArtikel, setErrorRandomArtikel] = useState<string | null>(null);
   const [artikelTerbaru, setArtikelTerbaru] = useState<Array<ArtikelType>>([]);
+  //@ts-ignore
   const [errorArtikelTerbaru, setErrorArtikelTerbaru] = useState<string | null>(null);
 
 
@@ -201,6 +202,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
 
   // Render skeleton if loading
   const loadingMain = !artikel;
+  //@ts-ignore
   const loadingList = artikelRandom.length === 0;
 
   if (error || errorRandomArtikel) return <p role="alert">Error: {error || errorRandomArtikel}</p>;

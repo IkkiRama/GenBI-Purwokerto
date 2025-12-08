@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
     FaHome, FaInfoCircle, FaBuilding, FaTimes, FaBars,
     FaUser, FaEnvelope, FaUserCircle, FaSignOutAlt,
-    FaTachometerAlt, FaSun, FaMoon, FaFolder,
+    FaTachometerAlt, FaFolder,
     FaStar, FaPodcast,
     FaNetworkWired,
     FaHistory
@@ -278,7 +278,7 @@ const Navbar = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const { user } = useAuth();
-    const { isDark, toggleTheme } = useTheme();
+    const { isDark } = useTheme();
 
     // Check if current path matches any dropdown item
     const isDropdownItemActive = useCallback((dropdownItems) => {

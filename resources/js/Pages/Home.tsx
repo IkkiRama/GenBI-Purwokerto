@@ -44,6 +44,7 @@ const SkeletonCard: React.FC<{ lines?: number; height?: string }> = ({ lines = 3
   </div>
 );
 
+//@ts-ignore
 const LoadingInline: React.FC = () => (
   <div role="status" aria-live="polite" className="flex items-center gap-3">
     <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" aria-hidden>

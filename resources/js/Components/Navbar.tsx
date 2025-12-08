@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
     FaHome, FaInfoCircle, FaBuilding, FaTimes, FaBars,
     FaUser, FaEnvelope, FaUserCircle, FaSignOutAlt,
-    FaTachometerAlt, FaSun, FaMoon, FaFolder,
+    FaTachometerAlt, FaFolder,
     FaStar, FaPodcast,
     FaNetworkWired,
     FaHistory

@@ -16,21 +16,21 @@ const HeroGenBIPoint = () => (
             <div className="grid grid-cols-1 gap-5 animate-scroll-to-t">
                 <div className="row-span-2 h-[500px] rounded-md overflow-hidden">
                 <img
-                    src="./images/fajar.png"
+                    src="./images/hermanto.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
                 </div>
                 <div className="row-span-2 h-[500px] rounded-md overflow-hidden">
                 <img
-                    src="./images/nia.png"
+                    src="./images/ogun.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
                 </div>
                 <div className="row-span-2 h-[500px] rounded-md overflow-hidden">
                 <img
-                    src="./images/stevani.png"
+                    src="./images/royan.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
@@ -40,28 +40,28 @@ const HeroGenBIPoint = () => (
             <div className="animate-scroll-to-b">
                 <div className="h-[240px] -mt-52 rounded-md overflow-hidden">
                 <img
-                    src="./images/fajar.png"
+                    src="./images/hermanto.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
                 </div>
                 <div className="h-[240px] mt-5 rounded-md overflow-hidden">
                 <img
-                    src="./images/nia.png"
+                    src="./images/ogun.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
                 </div>
                 <div className="h-[240px] mt-5 rounded-md overflow-hidden">
                 <img
-                    src="./images/stevani.png"
+                    src="./images/royan.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />
                 </div>
                 <div className="h-[240px] mt-5 rounded-md overflow-hidden">
                 <img
-                    src="./images/fajar.png"
+                    src="./images/hermanto.png"
                     alt=""
                     className="w-full h-full object-cover"
                 />

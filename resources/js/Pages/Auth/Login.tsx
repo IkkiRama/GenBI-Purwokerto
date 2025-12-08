@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
-import Navbar from '@/Components/Navbar';
+// import Navbar from '@/Components/Navbar';
 
 export default function Login({
     status,
@@ -27,7 +27,7 @@ export default function Login({
 
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <Head title="Log in" />
 
             <div className="min-h-screen bg-gray-50 pt-24">

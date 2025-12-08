@@ -2,7 +2,7 @@ import InputError from '@/Components/InputError';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
-import Navbar from '@/Components/Navbar';
+// import Navbar from '@/Components/Navbar';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -22,7 +22,7 @@ export default function Register() {
 
     return (
         <>
-            <Navbar />
+            {/* <Navbar /> */}
             <Head title="Register" />
 
             <div className="min-h-screen bg-gray-50 pt-24">
