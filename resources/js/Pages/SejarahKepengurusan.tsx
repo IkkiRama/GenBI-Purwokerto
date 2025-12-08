@@ -44,6 +44,7 @@ export default function SejarahKepengurusan() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
     try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
+    //@ts-ignore
     themeHook?.setTheme?.(isDark ? 'dark' : 'light');
   }, [isDark]);
 

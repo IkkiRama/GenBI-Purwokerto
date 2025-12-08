@@ -92,6 +92,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
     if (isDark) document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
     try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+    //@ts-ignore
     themeHook?.setTheme?.(isDark ? 'dark' : 'light');
   }, [isDark]);
 

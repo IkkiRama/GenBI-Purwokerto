@@ -48,6 +48,7 @@ export default function GenBIPoint() {
     else document.documentElement.classList.remove('dark');
 
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    //@ts-ignore
     themeHook?.setTheme?.(isDark ? 'dark' : 'light');
   }, [isDark]);
 

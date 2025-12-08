@@ -1,8 +1,8 @@
-import React, { Suspense, useEffect, useState, useRef, lazy } from 'react';
+import React, { Suspense, useEffect, useState, lazy } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { Link, Head } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, ArrowRight, Award, Users, Target } from 'lucide-react';
+import { Play, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/Hooks/useTheme';
 import {
   IconCalendar,

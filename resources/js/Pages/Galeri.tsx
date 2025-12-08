@@ -54,6 +54,7 @@ const Galeri = () => {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
+    //@ts-ignore
     themeHook?.setTheme?.(isDark ? 'dark' : 'light');
   }, [isDark]);
 

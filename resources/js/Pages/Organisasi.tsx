@@ -66,6 +66,7 @@ const Organization: React.FC = () => {
     if (isDark) document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    //@ts-ignore
     themeHook?.setTheme?.(isDark ? 'dark' : 'light');
   }, [isDark]);
 
