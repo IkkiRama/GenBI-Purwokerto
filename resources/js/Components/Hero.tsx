@@ -27,7 +27,7 @@ const Hero = () => (
           <span className="text-blue-600">GenBI </span>Purwokerto
         </motion.h1>
         <motion.p
-          className="md:mt-8 mt-3 max-w-2xl mx-auto md:text-xl text-base text-black-600 font-bold"
+          className="md:mt-8 mt-3 max-w-2xl mx-auto md:text-xl text-base dark:text-gray-900 text-gray-900 font-bold"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}

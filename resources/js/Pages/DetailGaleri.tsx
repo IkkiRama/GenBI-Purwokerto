@@ -302,7 +302,7 @@ const DetailGaleri: React.FC<DetailGaleriProps> = ({ slug }) => {
                         id="filter"
                         value={filterType}
                         onChange={(e) => setFilterType(e.target.value as 'all' | 'photo' | 'video')}
-                        className="rounded border px-3 py-2 bg-white dark:bg-gray-800 shadow-sm focus:outline-none cursor-pointer"
+                        className="rounded border px-3 py-2 bg-white dark:bg-gray-800 shadow-sm focus:outline-none cursor-pointer text-gray-700 dark:text-gray-200"
                         aria-label="Filter galeri"
                         >
                             <option value="all">Semua</option>

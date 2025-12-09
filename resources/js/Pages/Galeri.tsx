@@ -119,8 +119,8 @@ const Galeri = () => {
 
           {/* HEADER */}
           <div className="pt-28 pb-8 text-center">
-            <h1 className="text-3xl font-bold">Galeri Kegiatan GenBI</h1>
-            <p className="opacity-80 mt-2">Dokumentasi berbagai kegiatan GenBI Purwokerto</p>
+            <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-200">Galeri Kegiatan GenBI</h1>
+            <p className="opacity-80 mt-2 text-gray-700 dark:text-gray-200">Dokumentasi berbagai kegiatan GenBI Purwokerto</p>
           </div>
 
           {/* FILTER TAB */}
@@ -134,7 +134,7 @@ const Galeri = () => {
                 className={`px-4 py-2 rounded-full text-sm transition font-semibold ${
                   filter === year.toString()
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-200 dark:bg-gray-700 dark:text-white'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200'
                 }`}
               >
                 {year === 'all' ? 'Semua' : year}
