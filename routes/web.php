@@ -24,6 +24,8 @@ use App\Http\Controllers\OrganisasiController;
 use App\Http\Controllers\PodcastController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TentangController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -45,8 +47,12 @@ Route::get('/genbi-point', [HomeController::class, 'genbiPoint'])->name('genbi-p
 Route::get('/artikel', [ArtikelController::class, 'index'])->name('artikel');
 Route::get('/artikel/{slug}', [ArtikelController::class, 'show'])->name('detail-artikel');
 Route::get('/podcast', [PodcastController::class, 'index'])->name('podcast');
+Route::get('/podcast/{slug}', [PodcastController::class, 'show'])->name('detail-podcast');
 Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri');
 Route::get('/galeri/{slug}', [GaleriController::class, 'show'])->name('detail-galeri');
+Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
+Route::get('/newsletter/{slug}', [NewsletterController::class, 'show'])->name('detail-newsletter');
+Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe.store');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -78,6 +84,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('struktur', StrukturController::class);
         Route::resource('roles', RoleController::class);
         Route::get('/settings', [AdminDashboardController::class, 'settings'])->name('settings');
+        Route::get('/newsletter/manage', [NewsletterController::class, 'manage'])->name('newsletter.manage');
+        Route::post('/newsletter', [NewsletterController::class, 'store'])->name('newsletter.store');
+        Route::delete('/newsletter/{id}', [NewsletterController::class, 'destroy'])->name('newsletter.destroy');
+        Route::post('/newsletter/{id}', [NewsletterController::class, 'update'])->name('newsletter.update');
     });
     // Operator Routes
     Route::middleware(['auth', 'role:operator'])->prefix('operator')->name('operator.')->group(function () {
