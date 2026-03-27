@@ -57,12 +57,12 @@ const Tentang = () => {
             <meta name="keywords" content="visi, misi, genbi purwokerto, generasi muda, pemberdayaan, perubahan positif" />
             <meta property="og:title" content="Tentang - GenBI Purwokerto" />
             <meta property="og:description" content="Pelajari lebih lanjut tentang visi dan misi GenBI Purwokerto." />
-            <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
-            <meta property="og:url" content="https://genbipurwokerto.com/tentang" />
+            <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
+            <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/tentang`} />
             <meta property="og:type" content="website" />
             <meta name="twitter:title" content="Tentang - GenBI Purwokerto" />
             <meta name="twitter:description" content="Pelajari lebih lanjut tentang visi dan misi GenBI Purwokerto." />
-            <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
+            <meta name="twitter:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
 

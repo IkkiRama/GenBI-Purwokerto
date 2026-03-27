@@ -73,7 +73,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [warnaProfile] = useState(getRandomColor());
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
 
   const themeHook = useTheme();
@@ -216,7 +216,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
         <meta property="og:title" content={artikel?.title ?? 'Detail Artikel - GenBI Purwokerto'} />
         <meta property="og:description" content={artikel?.excerpt ?? ''} />
         <meta property="og:image" content={artikel?.thumbnail ? BASE_URL+`/storage/${artikel.thumbnail}` : '../images/NO IMAGE AVAILABLE.jpg'} />
-        <meta property="og:url" content={`https://genbipurwokerto.com/${slug}`} />
+        <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/${slug}`} />
       </Head>
 
       {/* Page transition wrapper */}

@@ -6,7 +6,7 @@ import { FaCalendar, FaMapMarkedAlt } from 'react-icons/fa';
 import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
 /* ================= ANIMATION ================= */
 const pageTransition = {
@@ -97,10 +97,10 @@ const Galeri = () => {
           name="description"
           content="Galeri dokumentasi kegiatan GenBI Purwokerto dalam berbagai program sosial, edukasi, dan pengabdian."
         />
-        <link rel="canonical" href="https://genbipurwokerto.com/galeri" />
+        <link rel="canonical" href={`${import.meta.env.VITE_APP_URL}/galeri`} />
         <meta property="og:title" content="Galeri - GenBI Purwokerto" />
         <meta property="og:description" content="Dokumentasi kegiatan GenBI Purwokerto." />
-        <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
+        <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>

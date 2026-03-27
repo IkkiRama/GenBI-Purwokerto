@@ -24,9 +24,9 @@ createInertiaApp({
 
         root.render(
             <BrowserRouter>
-                <ThemeProvider>
+                {/* <ThemeProvider>
+                </ThemeProvider> */}
                     <App {...props} />
-                </ThemeProvider>
             </BrowserRouter>
         );
     },

@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MdCategory } from 'react-icons/md';
 
 export default function Artikel() {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   // theme
   const themeHook = useTheme();
@@ -352,8 +352,8 @@ export default function Artikel() {
         <meta name="keywords" content="artikel, genbi purwokerto, beasiswa bank indonesia, artikel genbi" />
         <meta property="og:title" content="Artikel GenBI Purwokerto - Generasi Baru Indonesia" />
         <meta property="og:description" content="Temukan artikel inspiratif GenBI Purwokerto." />
-        <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
-        <meta property="og:url" content="https://genbipurwokerto.com/artikel" />
+        <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
+        <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/artikel`} />
       </Head>
 
       {/* Skip link */}

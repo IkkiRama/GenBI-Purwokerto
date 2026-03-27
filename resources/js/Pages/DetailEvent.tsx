@@ -48,7 +48,7 @@ const DetailEvent: React.FC<DetailEventProps> = ({ slug }) => {
   const [isEventExpired, setIsEventExpired] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   const themeHook = useTheme();
   const [isDark, setIsDark] = useState<boolean>(() => {

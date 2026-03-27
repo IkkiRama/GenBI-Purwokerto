@@ -10,7 +10,7 @@
     <meta name="author" content="GenBI Purwokerto,Rifki Romadhan,Ahmad Rian">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="robots" content="index,follow">
+    {{-- <meta name="robots" content="index,follow"> --}}
     {{-- <meta http-equiv="Content-Security-Policy" content="script-src 'none'"> --}}
 
     <title inertia>{{ config('app.name', 'GenBI Purwokerto') }}</title>
@@ -24,7 +24,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:100,200,300,400,500,600,700,800,900,1000&display=swap" rel="stylesheet" />
 
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    {{-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
@@ -39,7 +39,7 @@
     gtag('js', new Date());
 
     gtag('config', 'G-D70M75YQYZ');
-    </script>
+    </script> --}}
 
     <!-- Theme Script -->
     <script>
@@ -64,8 +64,8 @@
 <body class="font-sans antialiased">
     <script src="https://cdn.jsdelivr.net/npm/sienna-accessibility@latest/dist/sienna-accessibility.umd.js" defer></script>
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRNT4GSX"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {{-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRNT4GSX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript> --}}
     <!-- End Google Tag Manager (noscript) -->
     @inertia
 </body>

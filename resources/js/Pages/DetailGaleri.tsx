@@ -8,7 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 import { Head } from "@inertiajs/react";
 import { useTheme } from "@/Hooks/useTheme";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 interface DetailGaleriProps {
   slug: string;
 }

@@ -5,7 +5,7 @@ import { Play, ArrowRight, ChevronDown } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { Head } from '@inertiajs/react';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
 /* ================= ANIMATION ================= */
 const pageTransition = {
@@ -152,7 +152,7 @@ export default function Podcast() {
       <Head>
         <title>Podcast - GenBI Purwokerto</title>
         <meta name="description" content="Podcast inspiratif GenBI Purwokerto tentang ekonomi, sosial, dan generasi muda." />
-        <link rel="canonical" href="https://genbipurwokerto.com/podcast" />
+        <link rel="canonical" href={`${import.meta.env.VITE_APP_URL}/podcast`} />
       </Head>
 
       <AnimatePresence mode="wait">

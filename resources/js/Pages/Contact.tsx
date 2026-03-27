@@ -42,7 +42,7 @@ const Contact = () => {
 
 
         try {
-            const response = await fetch('https://data.genbipurwokerto.com/api/kontak', {
+            const response = await fetch('https://genbi-data.test/api/kontak', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -85,12 +85,12 @@ const Contact = () => {
             <meta name="keywords" content="kontak, hubungi genbi purwokerto, informasi genbi, program genbi purwokerto, beasiswa bank indonesia" />
             <meta property="og:title" content="Kontak - GenBI Purwokerto" />
             <meta property="og:description" content="Hubungi GenBI Purwokerto untuk informasi lebih lanjut mengenai program, kegiatan, dan kontribusi kami." />
-            <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
-            <meta property="og:url" content="https://genbipurwokerto.com/kontak" />
+            <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
+            <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/kontak`}/>
             <meta property="og:type" content="website" />
             <meta name="twitter:title" content="Kontak - GenBI Purwokerto" />
             <meta name="twitter:description" content="Hubungi GenBI Purwokerto untuk informasi lebih lanjut mengenai program, kegiatan, dan kontribusi kami." />
-            <meta name="twitter:image" content="https://genbipurwokerto.com/images/logo.png" />
+            <meta name="twitter:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
             <meta name="twitter:card" content="summary_large_image" />
         </Head>
 

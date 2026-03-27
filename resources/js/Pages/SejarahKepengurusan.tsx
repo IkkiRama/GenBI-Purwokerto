@@ -23,7 +23,7 @@ const TABS = [
 ];
 
 export default function SejarahKepengurusan() {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   const [sejarahKepengurusan, setSejarahKepengurusan] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +105,7 @@ export default function SejarahKepengurusan() {
         <meta name="keywords" content="sejarah kepengurusan, genbi purwokerto, kepengurusan genbi" />
         <meta property="og:title" content="Sejarah Kepengurusan - GenBI Purwokerto" />
         <meta property="og:description" content="Pelajari sejarah kepengurusan GenBI Purwokerto." />
-        <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
+        <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
         <meta property="og:type" content="website" />
       </Head>
 

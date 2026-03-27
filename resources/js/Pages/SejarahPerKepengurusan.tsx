@@ -51,7 +51,7 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   const themeHook = useTheme();
   const [isDark, setIsDark] = useState(() => {
@@ -99,7 +99,7 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
         <meta name="keywords" content="struktur genbi, sejarah genbi, genbi purwokerto" />
         <meta property="og:title" content={`Struktur GenBI ${periode}`} />
         <meta property="og:description" content={`Struktur lengkap GenBI Purwokerto periode ${periode}.`} />
-        <meta property="og:image" content="https://genbipurwokerto.com/images/logo.png" />
+        <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
         <meta property="og:type" content="website" />
       </Head>
 

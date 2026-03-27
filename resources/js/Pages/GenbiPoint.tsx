@@ -30,7 +30,7 @@ export default function GenBIPoint() {
   // TAB STATE
   const [activeTab, setActiveTab] = useState<'deputi' | 'staff'>('deputi');
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   /* =========================
      DARK MODE HANDLING
@@ -146,7 +146,7 @@ export default function GenBIPoint() {
             content="GenBI Point adalah platform pengelolaan aktivitas, penilaian, dan prestasi anggota GenBI Purwokerto."
           />
           <meta name="robots" content="index, follow" />
-          <link rel="canonical" href="https://genbipurwokerto.com/genbi-point" />
+          <link rel="canonical" href={`${import.meta.env.VITE_APP_URL}/genbi-point`} />
           <meta name="theme-color" content={isDark ? '#111827' : '#ffffff'} />
         </Head>
 

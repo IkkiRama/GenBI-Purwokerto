@@ -45,7 +45,7 @@ const ShimmerSkeleton = ({ className }: { className?: string }) => (
 
 // ================= MAIN COMPONENT =================
 const Organization: React.FC = () => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   const [struktur, setStruktur] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

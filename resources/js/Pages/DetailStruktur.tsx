@@ -20,7 +20,7 @@ interface Member {
 
 //@ts-ignore
 const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
   const [struktur, setStruktur] = useState<any | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
@@ -138,7 +138,7 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
         <meta name="keywords" content="struktur, genbi, kepengurusan, purwokerto, organisasi" />
         <meta property="og:title" content={`Detail Struktur ${namaBidang} — GenBI Purwokerto`} />
         <meta property="og:description" content={struktur?.quote ?? `Struktur ${namaBidang} periode ${periode}`} />
-        <meta property="og:image" content={struktur?.foto ? `${BASE_URL}/storage/${struktur.foto}` : 'https://genbipurwokerto.com/images/logo.png'} />
+        <meta property="og:image" content={struktur?.foto ? `${BASE_URL}/storage/${struktur.foto}` : `${import.meta.env.VITE_APP_URL}/images/logo.png`} />
       </Head>
 
       {/* Theme toggle */}

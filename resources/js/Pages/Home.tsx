@@ -87,7 +87,7 @@ export default function Home() {
   const [eventData, setEventData] = useState<any[]>([]);
   const [artikelPalingBaru, setArtikelPalingBaru] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL as string || '';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL as string || 'https://genbi-data.test';
 
   const reducedMotion = usePrefersReducedMotion();
 
@@ -168,8 +168,8 @@ export default function Home() {
             '@context': 'https://schema.org',
             '@type': 'Organization',
             name: 'GenBI Purwokerto',
-            url: 'https://genbipurwokerto.com',
-            logo: 'https://genbipurwokerto.com/images/logo.png',
+            url: import.meta.env.VITE_APP_URL,
+            logo: `${import.meta.env.VITE_APP_URL}/images/logo.png`,
           })}
         </script>
         <meta name="twitter:card" content="summary_large_image" />

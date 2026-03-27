@@ -45,7 +45,7 @@ export default function Event() {
     return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   });
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://data.genbipurwokerto.com';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -124,7 +124,7 @@ export default function Event() {
         <meta name="robots" content="index,follow" />
         <meta property="og:title" content="Event - GenBI Purwokerto" />
         <meta property="og:description" content="Jelajahi acara GenBI Purwokerto: seminar, pelatihan, dan kegiatan sosial." />
-        <meta property="og:url" content={`https://genbipurwokerto.com${url}`} />
+        <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/${url}`} />
       </Head>
 
       {/* Skip link for keyboard users */}
