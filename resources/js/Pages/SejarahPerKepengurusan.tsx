@@ -47,6 +47,7 @@ const SkeletonCard = () => (
 // ===== MAIN =====
 const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
   const [struktur, setStruktur] = useState<any[]>([]);
+  const [sotm, setSotm] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,6 +61,23 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
     if (stored) return stored === 'dark';
     return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
   });
+
+    useEffect(() => {
+        const fetchSotm = async () => {
+            try {
+            const res = await fetch(`${BASE_URL}/api/sotm/${periode}`);
+            const json = await res.json();
+            if (!json.success) throw new Error(json.message);
+            setSotm(json.data);
+            } catch (e) {
+            console.error(e);
+            }
+        };
+
+        fetchSotm();
+    }, [periode]);
+
+    const sortedSotm = [...sotm].sort((a, b) => a.jenis.localeCompare(b.jenis));
 
   useEffect(() => {
     if (isDark) document.documentElement.classList.add('dark');
@@ -188,6 +206,39 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
                 </AnimatePresence>
               )}
             </div>
+
+            {/* SOTM SECTION */}
+            {sotm.length > 0 && (
+                <div className="mt-20">
+                    <h2 className="text-xl sm:text-2xl font-bold text-center text-gray-800 dark:text-white mb-8">
+                    Staff of The Month
+                    </h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {sortedSotm.map((item) => (
+                        <div
+                        key={item.id}
+                        className="rounded-xl overflow-hidden border-2 border-yellow-400 dark:border-yellow-500 bg-white dark:bg-gray-900"
+                        >
+                        <img
+                            src={item.image ? BASE_URL + `/storage/${item.image}` : "./images/NO IMAGE AVAILABLE.jpg"}
+                            alt={item.jenis}
+                            className="w-full h-56 object-cover"
+                        />
+
+                        <div className="p-4 text-center">
+                            <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                            {item.jenis}
+                            </p>
+                            <p className="font-semibold text-gray-800 dark:text-white">
+                            {item.periode}
+                            </p>
+                        </div>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+            )}
           </div>
         </motion.main>
       </AnimatePresence>

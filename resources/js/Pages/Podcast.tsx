@@ -1,9 +1,8 @@
 import MainLayout from '@/Layouts/MainLayout';
 import { useTheme } from '@/Hooks/useTheme';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Play, ArrowRight, ChevronDown } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
@@ -39,24 +38,19 @@ const SkeletonCard = ({ isDark }) => (
 );
 
 /* ================= PODCAST CARD ================= */
-const PodcastCard = ({ title, videoId, youtubeUrl, date, description, isDark }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const PodcastCard = ({ slug, title, thumbnail, date, isDark }) => {
 
   return (
     <motion.div {...listAnimation}>
       <div className={`rounded-xl overflow-hidden shadow-lg backdrop-blur ${
         isDark ? 'bg-gray-800/70 text-white' : 'bg-white/70 text-gray-900'
       }`}>
-        <div className="p-4 flex flex-col gap-6">
-            <div className="aspect-video rounded-lg overflow-hidden">
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title={title}
-                loading="lazy"
-                allowFullScreen
-              />
-            </div>
+        <Link href={`/podcast/${slug}`} className="p-4 flex flex-col gap-6">
+            <img
+                src={thumbnail ? BASE_URL + `/storage/${thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"}
+                alt={title}
+                className="bg-gray-300 rounded-xl lg:rounded-sm h-[250px] object-cover w-full"
+            />
 
           <div className="flex flex-col justify-between">
             <div>
@@ -64,38 +58,11 @@ const PodcastCard = ({ title, videoId, youtubeUrl, date, description, isDark }) 
                 {date}
               </span>
 
-              <h3 className="text-lg font-bold mb-2">{title}</h3>
+              <h3 className="text-lg font-bold mb-2 line-clamp-2">{title}</h3>
 
-              {description !== '-' && (
-                <>
-                  <p className={`text-sm opacity-80 ${!isExpanded && 'line-clamp-3'}`}>
-                    {description}
-                  </p>
-
-                  <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-blue-500 text-sm mt-2 flex items-center hover:underline"
-                    aria-expanded={isExpanded}
-                  >
-                    {isExpanded ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
-                    <ChevronDown className={`ml-1 w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                  </button>
-                </>
-              )}
             </div>
-
-            <a
-              href={youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition hover:shadow-lg bg-blue-600 text-white text-sm w-fit mt-4"
-            >
-              <Play size={16} />
-              Tonton
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-            </a>
           </div>
-        </div>
+        </Link>
       </div>
     </motion.div>
   );
@@ -196,10 +163,10 @@ export default function Podcast() {
           </div>
 
           {/* CONTENT */}
-          <div className="max-w-6xl mx-auto px-4 pb-20" aria-busy={loading}>
+          <div className="mx-auto lg:px-10 px-3 pb-20" aria-busy={loading}>
             <AnimatePresence mode="wait">
               {loading ? (
-                <motion.div className="grid md:grid-cols-2 gap-6">
+                <motion.div className="grid md:grid-cols-3 gap-6">
                   {[...Array(4)].map((_, i) => (
                     <SkeletonCard key={i} isDark={isDark} />
                   ))}
@@ -207,7 +174,7 @@ export default function Podcast() {
               ) : error ? (
                 <p className="text-center text-red-500" aria-live="polite">{error}</p>
               ) : (
-                <motion.div className="grid md:grid-cols-2 gap-6">
+                <motion.div className="grid md:grid-cols-3 gap-6">
                   {filteredData.map((podcast, i) => (
                     <PodcastCard key={i} {...podcast} isDark={isDark} />
                   ))}

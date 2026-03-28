@@ -20,4 +20,13 @@ class ArtikelController extends Controller
 
         return Inertia::render('DetailArtikel', $validatedData);
     }
+
+    public function showKategori(string $slug)
+    {
+        $validatedData = [
+            'slug' => (string) $slug,
+        ];
+
+        return Inertia::render('DetailKategoriArtikel', $validatedData);
+    }
 }

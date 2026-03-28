@@ -3,23 +3,21 @@
 namespace App\Http\Controllers;
 
 use \App\Models\Podcast;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PodcastController extends Controller
 {
     public function index()
     {
-        $podcasts = Podcast::latest()->get();
-
-        return Inertia::render('Podcast',['podcast' => $podcasts]);
+        return Inertia::render('Podcast');
     }
 
-    public function show($slug)
+    public function show(string $slug)
     {
-        // cari podcast berdasarkan slug
-        $podcast = Podcast::where('slug', $slug)->firstOrFail();
-        
-        return Inertia::render('PodcastDetail', ['podcast' => $podcast]);
+        $validatedData = [
+            'slug' => (string) $slug,
+        ];
+
+        return Inertia::render('DetailPodcast', $validatedData);
     }
 }

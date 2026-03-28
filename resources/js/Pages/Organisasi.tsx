@@ -157,7 +157,7 @@ const Organization: React.FC = () => {
                       transition={{ delay: index * 0.1 }}
                     >
                       <div className="h-28 flex items-center justify-center mb-4">
-                        <img src={uni.logo} alt={uni.name} className="max-h-full max-w-[160px] object-contain" />
+                        <img src={uni.logo || '/images/NO IMAGE AVAILABLE.jpg'} alt={uni.name} className="max-h-full max-w-[160px] object-contain" />
                       </div>
                       <h3 className={`text-center font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
                         {uni.shortName}
