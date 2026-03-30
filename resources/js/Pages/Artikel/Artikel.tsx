@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { FaCalendar, FaEnvelope, FaFire, FaUser } from "react-icons/fa";
-import backgroundImageArtikel from "../../../public/images/NO IMAGE AVAILABLE.jpg";
+import backgroundImageArtikel from "../../../../public/images/NO IMAGE AVAILABLE.jpg";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/css';

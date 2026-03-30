@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'api' => [
+        'base_url' => env('VITE_API_BASE_URL'),
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => config('app.url'). "/auth-google-callback",
+        'guzzle' => [
+            'verify' => false,
+        ],
+    ],
+
 ];

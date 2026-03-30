@@ -9,6 +9,7 @@
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.26",
         "laravel/tinker": "^2.9",
         "spatie/laravel-permission": "^6.10",
         "tightenco/ziggy": "^2.3"
@@ -71,11 +72,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
-    }
+    "prefer-stable": true
 }

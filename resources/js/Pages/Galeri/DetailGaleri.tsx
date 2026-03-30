@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { FaCalendar, FaMapMarkedAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import MainLayout from '@/Layouts/MainLayout';
-import { changeDate } from './../Utils/changeDate';
+import { changeDate } from './../../Utils/changeDate';
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Head } from "@inertiajs/react";
@@ -234,16 +234,13 @@ const DetailGaleri: React.FC<DetailGaleriProps> = ({ slug }) => {
       {/* Theme toggle */}
       <div className="fixed right-5 bottom-24 z-50">
         <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark((s) => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-          <div className={`w-10 h-6 rounded-full p-1 transition-all ${isDark ? 'bg-blue-600' : 'bg-gray-300'}`}>
-            <div className={`w-4 h-4 rounded-full bg-white shadow transform transition-transform ${isDark ? 'translate-x-4' : ''}`} />
-          </div>
-        </button>
+            aria-label="Toggle theme"
+            aria-pressed={isDark}
+            onClick={() => setIsDark(s => !s)}
+            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
+          </button>
       </div>
 
       <motion.main

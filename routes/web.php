@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ArtikelController;
@@ -11,6 +12,8 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\TentangController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\DeveloperController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
@@ -43,5 +46,13 @@ Route::get('/galeri/{slug}', [GaleriController::class, 'show'])->name('detail-ga
 Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
 Route::get('/newsletter/{slug}', [NewsletterController::class, 'show'])->name('detail-newsletter');
 
+Route::get('/sejarah-developer', [DeveloperController::class, 'index'])->name('developer');
+
+Route::get('/kuis', [QuizController::class, 'index'])->name('kuis');
+Route::get('/kuis/mulai/{uuid}', [QuizController::class, 'start'])->name('kuis start');
+
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe.store');
 
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+// Route::get('/auth-success/{token}', [AuthController::class, 'authSuccess'])->name('auth-success');
+Route::get('/auth-success', [AuthController::class, 'authSuccess'])->name('auth-success');

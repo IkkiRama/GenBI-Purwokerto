@@ -9,7 +9,7 @@ class GaleriController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Galeri', []);
+        return Inertia::render('Galeri/Galeri', []);
     }
 
     public function show(string $slug)
@@ -18,6 +18,6 @@ class GaleriController extends Controller
             'slug' => (string) $slug,
         ];
 
-        return Inertia::render('DetailGaleri', $validatedData);
+        return Inertia::render('Galeri/DetailGaleri', $validatedData);
     }
 }

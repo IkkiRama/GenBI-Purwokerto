@@ -11,7 +11,8 @@ class SitemapController extends Controller
     public function index()
     {
         // URL API untuk sitemap
-        $sitemapUrl = "https://data.genbipurwokerto.com/api/sitemap.xml";
+        $sitemapUrl = config('services.api.base_url') . "/api/sitemap.xml";
+        // $sitemapUrl = config('services.api.base_url') . "/api/sitemap.xml";
 
         try {
             // Inisialisasi Guzzle Client

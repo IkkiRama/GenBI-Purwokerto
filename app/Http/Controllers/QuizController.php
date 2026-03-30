@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
 use Inertia\Inertia;
 
-class TentangController extends Controller
+class QuizController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Tentang Kami/Tentang', []);
+        return Inertia::render('Kuis/Kuis', []);
     }
 }

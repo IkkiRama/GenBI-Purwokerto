@@ -20,3 +20,5 @@ unlink storage
 Finally, run the command to create the symlink manually (assuming we are still in public/):
 
 ln -s ../storage/app/public storage
+
+php artisan serve --port=3000

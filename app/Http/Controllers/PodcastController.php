@@ -9,7 +9,7 @@ class PodcastController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Podcast');
+        return Inertia::render('Podcast/Podcast');
     }
 
     public function show(string $slug)
@@ -18,6 +18,6 @@ class PodcastController extends Controller
             'slug' => (string) $slug,
         ];
 
-        return Inertia::render('DetailPodcast', $validatedData);
+        return Inertia::render('Podcast/DetailPodcast', $validatedData);
     }
 }

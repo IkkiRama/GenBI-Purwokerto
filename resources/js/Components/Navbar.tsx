@@ -1,703 +1,737 @@
-import { useState, useEffect, useCallback, memo } from 'react';
-import { Link, usePage } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState, useRef, useEffect } from "react";
+import { Link, usePage } from "@inertiajs/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-    FaHome, FaInfoCircle, FaBuilding, FaTimes, FaBars,
-    FaUser, FaEnvelope, FaUserCircle, FaSignOutAlt,
-    FaTachometerAlt, FaFolder,
-    FaStar, FaPodcast,
-    FaNetworkWired,
-    FaHistory
-} from 'react-icons/fa';
-import { useAuth } from '@/Hooks/useAuth';
-import { BookOpen } from 'lucide-react';
-import { IconGallery } from '@irsyadadl/paranoid';
+  ChevronDown,
+  ChevronRight,
+  Search,
+  X
+} from "lucide-react";
 
-const NAV_ITEMS = [
-    { path: '/', label: 'Beranda', icon: FaHome },
-    { path: '/event', label: 'Event', icon: FaNetworkWired },
+import {
+  FaHome,
+  FaInfoCircle,
+  FaGamepad,
+  FaBuilding,
+  FaHistory,
+  FaBullhorn,
+  FaPhone,
+  FaGraduationCap,
+  FaChartBar,
+  FaUsers,
+  FaQuestionCircle,
+  FaFolderOpen,
+  FaNewspaper,
+  FaPodcast,
+  FaImages,
+  FaBookOpen,
+  FaLaptopCode,
+  FaSearch
+} from "react-icons/fa";
+
+const Navbar = () => {
+  const { url } = usePage();
+
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeSub, setActiveSub] = useState(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSub, setMobileSub] = useState({});
+
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const isAllEmpty = results &&
+    (!results.artikels?.length &&
+    !results.podcasts?.length &&
+    !results.quizzes?.length &&
+    !results.galeris?.length);
+
+
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+
+  const NAV = [
     {
-        id: 'about',
-        label: 'Tentang Kami',
-        icon: FaInfoCircle,
-        dropdown: [
-            { path: '/genbi-point', label: 'GenBI Point', icon: FaStar },
-            { path: '/tentang', label: 'Tentang GenBI', icon: FaInfoCircle },
-            { path: '/organisasi', label: 'Organisasi', icon: FaBuilding },
-            { path: '/sejarah-kepengurusan', label: 'Sejarah Kepengurusan', icon: FaHistory }
+      label: "Beranda",
+      path: "/",
+      icon: FaHome
+    },
+    {
+      label: "Tentang Kami",
+      icon: FaInfoCircle,
+      children: [
+        { label: "Tentang GenBI", path: "/tentang", icon: FaInfoCircle },
+        { label: "Organisasi", path: "/organisasi", icon: FaBuilding },
+        { label: "Sejarah", path: "/sejarah-kepengurusan", icon: FaHistory },
+        { label: "Program Kerja", soon: true, icon: FaBullhorn },
+        { label: "Pengumuman", soon: true, icon: FaBullhorn },
+        { label: "Kontak", path: "/contact", icon: FaPhone },
+        {
+          label: "Beasiswa BI",
+          icon: FaGraduationCap,
+          path: "#",
+          children: [
+            { label: "Tentang Beasiswa BI", soon: true },
+            { label: "Syarat & Ketentuan", soon: true },
+            { label: "Cara Daftar", soon: true }
+          ]
+        },
+        { label: "FAQ", soon: true, path: "#", icon: FaQuestionCircle },
+        { label: "Testimoni", soon: true, path: "#", icon: FaUsers },
+        { label: "Statistik", soon: true, path: "#", icon: FaChartBar },
+        { label: "Tim Pengembang", path: "/sejarah-developer", icon: FaLaptopCode }
+      ]
+    },
+    {
+        label: "Media",
+        icon: FaFolderOpen, // lebih cocok untuk kategori utama
+        children: [
+            { label: "Artikel", path: "/artikel", icon: FaNewspaper },
+            { label: "Podcast", path: "/podcast", icon: FaPodcast },
+            { label: "Galeri", path: "/galeri", icon: FaImages },
+            { label: "Kuis", path: "/kuis", icon: FaQuestionCircle },
+
+            {
+            label: "Publikasi",
+            icon: FaBookOpen,
+            soon: true,
+            children: [
+                { label: "Data Keuangan", soon: true },
+                { label: "Transparansi Poin", soon: true },
+                { label: "Publikasi Ilmiah", soon: true }
+            ]
+            }
         ]
     },
     {
-        id: 'media',
-        label: 'Media',
-        icon: FaFolder,
-        dropdown: [
-            { path: '/artikel', label: 'Artikel', icon: BookOpen },
-            { path: '/podcast', label: 'Podcast', icon: FaPodcast },
-            { path: '/galeri', label: 'Galeri', icon: IconGallery }
-        ]
-    },
-    { path: '/contact', label: 'Kontak', icon: FaEnvelope }
-];
-
-// const BOTTOM_NAV_ITEMS = [
-//     { path: '/', label: 'Beranda', icon: FaHome },
-//     {
-//         id: 'about',
-//         label: 'Tentang',
-//         icon: FaInfoCircle,
-//         dropdown: [
-//             { path: '/genbi-point', label: 'GenBI Point', icon: FaStar },
-//             { path: '/tentang', label: 'Tentang GenBI', icon: FaInfoCircle },
-//             { path: '/organisasi', label: 'Organisasi', icon: FaBuilding }
-//         ]
-//     },
-//     {
-//         id: 'media',
-//         label: 'Media',
-//         icon: FaFolder,
-//         dropdown: [
-//             { path: '/artikel', label: 'Artikel', icon: BookOpen },
-//             { path: '/podcast', label: 'Podcast', icon: FaPodcast }
-//         ]
-//     },
-//     { path: '/contact', label: 'Kontak', icon: FaEnvelope }
-// ];
-
-// Memoized Components
-//@ts-ignore
-const MobileMenuItem = memo(({ href, icon: Icon, label, isDark, onClick, isActive }) => (
-    <Link
-    //@ts-ignore
-        href={href}
-        className={`flex items-center space-x-3 p-3 rounded-xl ${
-            isActive
-                ? 'bg-blue-600 text-white'
-                : isDark
-                    ? 'text-gray-300 hover:bg-gray-800/60'
-                    : 'text-gray-700 hover:bg-gray-100'
-        } transition-all duration-200`}
-        onClick={onClick}
-    >
-        <div className={`size-9 rounded-xl flex items-center justify-center ${
-            isActive
-                ? 'bg-blue-500'
-                : isDark ? 'bg-gray-800/80' : 'bg-gray-100'
-        }`}>
-            <Icon className="w-5 h-5" />
-        </div>
-        <span className="font-medium">{label}</span>
-    </Link>
-));
-
-// Desktop Navigation Item
-//@ts-ignore
-const DesktopNavItem = memo(({ item, isActive, isDark, activeDropdown, onDropdownToggle }) => {
-    const hasDropdown = item.dropdown;
-
-    if (hasDropdown) {
-        return (
-            <div className="relative">
-                <button
-                    onClick={() => onDropdownToggle(item.id)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center ${
-                        isActive
-                            ? 'bg-blue-600 text-white'
-                            : isDark
-                                ? 'text-gray-300 hover:bg-gray-700'
-                                : 'text-gray-700 hover:bg-gray-200'
-                    }`}
-                >
-                    <item.icon className="mr-2" />
-                    {item.label}
-                    <ChevronDown className={`ml-2 w-4 h-4 transition-transform duration-200 ${
-                        activeDropdown === item.id ? 'rotate-180' : ''
-                    }`} />
-                </button>
-
-                <AnimatePresence>
-                    {activeDropdown === item.id && (
-                        <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className={`absolute left-0 mt-2 w-48 rounded-xl shadow-lg py-1 border ${
-                                isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'
-                            }`}
-                        >
-                            {item.dropdown.map((dropItem) => (
-                                <Link
-                                    key={dropItem.path}
-                                    href={dropItem.path}
-                                    className={`flex items-center space-x-3 px-4 py-2 text-sm ${
-                                        isDark
-                                            ? 'text-gray-300 hover:bg-gray-700'
-                                            : 'text-gray-700 hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <dropItem.icon className="w-4 h-4" />
-                                    <span>{dropItem.label}</span>
-                                </Link>
-                            ))}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-        );
+      label: "Game Edukasi",
+      icon: FaGamepad,
+      children: [
+        {
+          label: "Game Makro",
+          icon: FaGamepad,
+          soon: true,
+          children: [
+            { label: "Respon Kebijakan", soon: true },
+            { label: "World Crisis Simulator", soon: true },
+            { label: "Macro Tycoon", soon: true },
+            { label: "Country Simulator", soon: true },
+            { label: "Sawitisasi Simulator", soon: true },
+            { label: "IS-LM Simulator", soon: true }
+          ]
+        },
+        {
+          label: "Game Metopen",
+          icon: FaSearch,
+          soon: true,
+          children: [
+            { label: "Metodolgy Suggestion", soon: true },
+            { label: "Moderasi atau Mediasi", soon: true },
+          ]
+        },
+        {
+          label: "Game Statistik",
+          icon: FaChartBar,
+          soon: true,
+          children: [
+            { label: "Z-Score Reader", soon: true },
+            { label: "T-Table Reader", soon: true },
+            { label: "Sample Kalkulator", soon: true }
+          ]
+        }
+      ]
     }
+  ];
 
-    return (
-        <Link
-            href={item.path}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center ${
-                isActive
-                    ? 'bg-blue-600 text-white'
-                    : isDark
-                        ? 'text-gray-300 hover:bg-gray-700'
-                        : 'text-gray-700 hover:bg-gray-200'
-            }`}
-        >
-            <item.icon className="mr-2" />
-            {item.label}
-        </Link>
+  const isActive = (path) => {
+    if (!path) return false;
+    return path === "/" ? url === "/" : url.startsWith(path);
+  };
+
+  const isParentActive = (item) => {
+    if (item.path) return isActive(item.path);
+    return item.children?.some((c) => c.path && isActive(c.path));
+  };
+
+  const timeoutRef = useRef(null);
+
+  const handleEnter = (label) => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(label);
+      setActiveSub(null);
+    }, 100);
+  };
+
+  const handleLeave = () => {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+      setActiveSub(null);
+    }, 200);
+  };
+
+  const chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
+      arr.slice(i * size, i * size + size)
     );
-});
 
-// Bottom Navigation Item
-// const BottomNavItem = memo(({ item, isActive, isDark, onItemClick }) => {
-//     const [showDropdown, setShowDropdown] = useState(false);
-//     const hasDropdown = item.dropdown;
-
-//     const handleClick = (e) => {
-//         if (hasDropdown) {
-//             e.preventDefault();
-//             setShowDropdown(!showDropdown);
-//         } else {
-//             onItemClick?.();
-//         }
-//     };
-
-//     return (
-//         <div className="relative">
-//             <Link
-//                 href={item.path}
-//                 onClick={handleClick}
-//                 className="flex flex-col items-center py-2 transition-all duration-300 relative group"
-//             >
-//                 {isActive && (
-//                     <motion.div
-//                         layoutId="bottomNav"
-//                         className="absolute -top-1 w-8 h-1 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 shadow-lg shadow-blue-500/30"
-//                         transition={{
-//                             type: "spring",
-//                             stiffness: 300,
-//                             damping: 30
-//                         }}
-//                     />
-//                 )}
-
-//                 <div className={`
-//                     p-1.5 rounded-xl transition-all duration-300
-//                     ${isActive
-//                         ? 'bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/20'
-//                         : isDark
-//                             ? 'text-gray-400 hover:text-blue-400 group-hover:bg-gray-800/50'
-//                             : 'text-gray-500 hover:text-blue-600 group-hover:bg-gray-100/50'
-//                     }
-//                 `}>
-//                     <item.icon className={`
-//                         h-4 w-4 transition-transform duration-300
-//                         ${isActive ? 'scale-110' : 'group-hover:scale-110'}
-//                     `} />
-//                 </div>
-
-//                 <span className={`
-//                     text-[10px] font-medium transition-all duration-300
-//                     ${isActive
-//                         ? isDark ? 'text-blue-400' : 'text-blue-600'
-//                         : isDark
-//                             ? 'text-gray-400 group-hover:text-blue-400'
-//                             : 'text-gray-500 group-hover:text-blue-600'
-//                     }
-//                 `}>
-//                     {item.label}
-//                 </span>
-//             </Link>
-
-//             {/* Dropdown Menu */}
-//             <AnimatePresence>
-//                 {showDropdown && hasDropdown && (
-//                     <motion.div
-//                         initial={{ opacity: 0, y: 10 }}
-//                         animate={{ opacity: 1, y: 0 }}
-//                         exit={{ opacity: 0, y: 10 }}
-//                         className={`
-//                             absolute bottom-full mb-16 left-1/2 -translate-x-1/2 w-48
-//                             rounded-xl shadow-lg overflow-hidden border
-//                             ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}
-//                         `}
-//                     >
-//                         {item.dropdown.map((dropItem) => (
-//                             <Link
-//                                 key={dropItem.path}
-//                                 href={dropItem.path}
-//                                 className={`
-//                                     flex items-center space-x-3 p-3 text-sm
-//                                     ${isDark
-//                                         ? 'text-gray-300 hover:bg-gray-700'
-//                                         : 'text-gray-700 hover:bg-gray-50'
-//                                     }
-//                                 `}
-//                                 onClick={() => {
-//                                     setShowDropdown(false);
-//                                     onItemClick?.();
-//                                 }}
-//                             >
-//                                 <div className={`
-//                                     size-8 rounded-lg flex items-center justify-center
-//                                     ${isDark ? 'bg-gray-700' : 'bg-gray-100'}
-//                                 `}>
-//                                     <dropItem.icon className="w-4 h-4" />
-//                                 </div>
-//                                 <span className="font-medium">{dropItem.label}</span>
-//                             </Link>
-//                         ))}
-//                     </motion.div>
-//                 )}
-//             </AnimatePresence>
-//         </div>
-//     );
-// });
-
-const Navbar = ({isDark}) => {
-    const { url } = usePage();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [activeDropdown, setActiveDropdown] = useState(null);
-    const { user } = useAuth();
-
-    // Check if current path matches any dropdown item
-    const isDropdownItemActive = useCallback((dropdownItems) => {
-        return dropdownItems?.some(item => url.startsWith(item.path));
-    }, [url]);
-
-    // Check if path is active
-    const isPathActive = useCallback((path) => {
-        return  path === '/' ? url === path : url.startsWith(path);
-    }, [url]);
-
-    // Scroll handler with debounce
+    // UNTUK FETCH API SEARCH
     useEffect(() => {
-        let timeoutId;
-        const handleScroll = () => {
-            if (timeoutId) clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-                setIsScrolled(window.scrollY > 20);
-            }, 100);
+        const delay = setTimeout(() => {
+            if (query.trim()) {
+            fetchSearch();
+            } else {
+            setResults(null);
+            }
+        }, 400);
+
+        return () => clearTimeout(delay);
+    }, [query]);
+
+    const fetchSearch = async () => {
+        try {
+            setLoading(true);
+
+            const res = await fetch(`${BASE_URL}/api/search?q=${query}`);
+            const data = await res.json();
+
+            setResults(data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const handleEsc = (e) => {
+            if (e.key === "Escape") {
+            setIsSearchOpen(false);
+            }
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        if (isSearchOpen) {
+            document.addEventListener("keydown", handleEsc);
+        }
+
         return () => {
-            window.removeEventListener('scroll', handleScroll);
-            if (timeoutId) clearTimeout(timeoutId);
+            document.removeEventListener("keydown", handleEsc);
         };
-    }, []);
+    }, [isSearchOpen]);
 
-    const toggleMenu = useCallback(() => {
-        setIsMenuOpen(prev => !prev);
-        if (isProfileOpen) setIsProfileOpen(false);
-        setActiveDropdown(null);
-    }, [isProfileOpen]);
 
-    const toggleDropdown = useCallback((dropdownId) => {
-        setActiveDropdown(prev => prev === dropdownId ? null : dropdownId);
-    }, []);
+  return (
+    <>
+      {/* NAVBAR */}
+      <div className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <Link href="/">
+            <img src="/images/genbi-logo.png" className="h-8" />
+          </Link>
 
-    const handleItemClick = useCallback(() => {
-        setIsMenuOpen(false);
-        setActiveDropdown(null);
-        setIsProfileOpen(false);
-    }, []);
+          {/* DESKTOP */}
+          <div className="hidden md:flex items-center gap-4">
+            {NAV.map((item) => {
+              const hasChild = item.children;
 
-    return (
-        <>
-            {/* Main Navbar */}
-            <motion.nav
-                className={`fixed w-full z-50 top-0 transition-all duration-300 ${
-                    isScrolled
-                        ? isDark
-                            ? 'bg-gray-900/80 backdrop-blur-md shadow-md border-b border-gray-800'
-                            : 'bg-white/80 backdrop-blur-md shadow-md'
-                        : 'bg-transparent'
-                }`}
-                initial={{ y: -100 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16 md:h-20">
-                        {/* Logo */}
-                        <div className="flex-shrink-0">
-                            <Link href={route('home')} className="flex items-center">
-                                <img
-                                    src="/images/genbi-logo.png"
-                                    alt="GenBI Logo"
-                                    className="h-8 md:h-10 w-auto"
-                                />
-                            </Link>
-                        </div>
+              return hasChild ? (
+                <div
+                  key={item.label}
+                  onMouseEnter={() => hasChild && handleEnter(item.label)}
+                  onMouseLeave={handleLeave}
+                  className="relative"
+                >
+                  <button
+                    onClick={() =>
+                      hasChild &&
+                      setActiveMenu(
+                        activeMenu === item.label ? null : item.label
+                      )
+                    }
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-800 ${
+                      isParentActive(item)
+                        ? "bg-blue-600 text-white"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <item.icon />
+                    {item.label}
+                    {hasChild && (
+                      <ChevronDown
+                        className={`w-4 ${
+                          activeMenu === item.label ? "rotate-180" : ""
+                        }`}
+                      />
+                    )}
+                  </button>
 
-                        {/* Desktop Navigation */}
-                        <div className="hidden md:flex">
-                            <div className={`flex space-x-1 ${
-                                isDark
-                                    ? 'bg-gray-800/80'
-                                    : 'bg-white/80'
-                                } backdrop-blur-md rounded-full p-1 shadow-lg`}>
-                                {NAV_ITEMS.map((item) => (
-                                    <DesktopNavItem
-                                        key={item.id || item.path}
-                                        //@ts-ignore
-                                        item={item}
-                                        isActive={item.dropdown
-                                            ? isDropdownItemActive(item.dropdown)
-                                            : isPathActive(item.path)
-                                        }
-                                        isDark={isDark}
-                                        activeDropdown={activeDropdown}
-                                        onDropdownToggle={toggleDropdown}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Desktop Auth Section */}
-                        <div className="hidden md:flex items-center space-x-4">
-                            {/* Theme Toggle */}
-                            {/* <button
-                                onClick={setIsDark((s) => !s)}
-                                className={`p-2 rounded-full transition-all duration-200 ${
-                                    isDark
-                                        ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700 border border-gray-700'
-                                        : 'bg-white/80 text-blue-600 hover:bg-gray-100'
-                                } shadow-lg`}
-                                aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+                  {/* MEGA MENU */}
+                    <AnimatePresence>
+                        {activeMenu === item.label && hasChild && (
+                            <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute left-0 right-0 mt-4 flex justify-center z-50"
                             >
-                                {isDark ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-                            </button> */}
+                            <div className="w-min-[900px] bg-white rounded-2xl shadow-xl p-6 flex gap-6">
 
-                            {user ? (
-                                <div className="relative">
-                                    <div className="flex items-center space-x-4">
-                                        <Link
-                                            href={route('admin.dashboard')}
-                                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 flex items-center ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-gray-200 hover:bg-gray-700'
-                                                    : 'bg-white/80 text-gray-700 hover:bg-gray-100'
-                                            } shadow-lg`}
-                                        >
-                                            <FaTachometerAlt className="mr-2" />
-                                            Dashboard
-                                        </Link>
-                                        <button
-                                            onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                            className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium ${
-                                                isDark
-                                                    ? 'bg-gray-800 text-blue-400 hover:bg-gray-700'
-                                                    : 'bg-white/80 text-blue-600 hover:bg-blue-50'
-                                            } shadow-lg`}
-                                        >
-                                            <FaUserCircle className="w-5 h-5" />
-                                            <span>{user.name}</span>
-                                        </button>
-                                    </div>
-
-                                    <AnimatePresence>
-                                        {isProfileOpen && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
-                                                className={`absolute right-0 mt-2 w-48 rounded-xl shadow-lg py-2 border ${
-                                                    isDark
-                                                        ? 'bg-gray-800 border-gray-700'
-                                                        : 'bg-white border-gray-100'
-                                                }`}
-                                            >
-                                                <Link
-                                                    href="/profile"
-                                                    className={`block px-4 py-2 text-sm ${
-                                                        isDark
-                                                            ? 'text-gray-300 hover:bg-gray-700'
-                                                            : 'text-gray-700 hover:bg-blue-50'
-                                                    }`}
-                                                >
-                                                    <FaUser className="inline-block mr-2" />
-                                                    Profile
-                                                </Link>
-                                                <Link
-                                                    href="/logout"
-                                                    method="post"
-                                                    as="button"
-                                                    className={`block w-full text-left px-4 py-2 text-sm ${
-                                                        isDark
-                                                            ? 'text-red-400 hover:bg-red-900/30'
-                                                            : 'text-red-600 hover:bg-red-50'
-                                                    }`}
-                                                >
-                                                    <FaSignOutAlt className="inline-block mr-2" />
-                                                    Logout
-                                                </Link>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                {/* 🔥 HIGHLIGHT */}
+                                <div className="hidden md:flex w-[240px] bg-blue-600 text-white rounded-xl p-4 flex-col justify-between">
+                                <div>
+                                    <h3 className="font-semibold text-lg">
+                                    {item.label}
+                                    </h3>
+                                    <p className="text-sm opacity-90 mt-2">
+                                    Jelajahi berbagai fitur dan informasi menarik dari {item.label}.
+                                    </p>
                                 </div>
-                            ) : (
-                                <Link
-                                    href="/login"
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                                        isDark
-                                            ? 'bg-gray-800 text-blue-400 hover:bg-gray-700'
-                                            : 'bg-white/80 text-blue-600 hover:bg-blue-50'
-                                    } shadow-lg`}
-                                >
-                                    Login
-                                </Link>
-                            )}
-                        </div>
+                                </div>
 
-                        {/* Mobile Menu Button */}
-                        <div className="md:hidden flex items-center space-x-2">
-                            {/* <button
-                                onClick={setIsDark((s) => !s)}
-                                className={`p-2 rounded-full transition-all duration-200 ${
-                                    isDark
-                                        ? 'bg-gray-800 text-yellow-400 border border-gray-700'
-                                        : 'bg-white/80 text-blue-600'
-                                } shadow-lg`}
-                                aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-                            >
-                                {isDark ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-                            </button> */}
+                                {/* SUB 1 */}
+                                <div className="flex gap-6">
+                                {chunk(item.children, 4).map((group, i) => (
+                                    <div key={i} className="space-y-3 min-w-[180px]">
+                                        {group.map((sub) => {
+                                            const isSoon = sub.soon;
+                                            const hasChildren = sub.children;
 
-                            <button
-                                onClick={toggleMenu}
-                                className={`p-2 rounded-full ${isDark ? 'text-gray-300' : 'text-gray-700'}`}
-                                aria-label="Toggle menu"
-                            >
-                                {isMenuOpen ? (
-                                    <FaTimes className="h-6 w-6" />
-                                ) : (
-                                    <FaBars className="h-6 w-6" />
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                                            return (
+                                                <Link
+                                                key={sub.label}
+                                                href={isSoon ? "#" : sub.path || "#"}
+                                                onClick={(e) => {
+                                                    if (isSoon) {
+                                                        e.preventDefault(); // ❌ ga redirect
+                                                    }
 
-                {/* Mobile Menu */}
-                <AnimatePresence>
-                    {isMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden overflow-hidden"
-                        >
-                            <div className={`px-4 py-6 ${
-                                isDark
-                                    ? 'bg-gray-900/95 border-t border-gray-800'
-                                    : 'bg-white/95'
-                                } backdrop-blur-lg`}
-                            >
-                                <div className="space-y-6">
-                                    {/* Menu Items */}
-                                    <div className="space-y-2">
-                                        {NAV_ITEMS.map((item) => (
-                                            <div key={item.id || item.path}>
-                                                {item.dropdown ? (
-                                                    <div className="space-y-2">
-                                                        <motion.button
-                                                            onClick={() => toggleDropdown(item.id)}
-                                                            className={`w-full flex items-center justify-between p-3 rounded-xl ${
-                                                                isDropdownItemActive(item.dropdown)
-                                                                    ? 'bg-blue-600 text-white'
-                                                                    : isDark
-                                                                        ? 'text-gray-300 hover:bg-gray-800/60'
-                                                                        : 'text-gray-700 hover:bg-gray-100'
-                                                            } transition-all duration-200`}
-                                                        >
-                                                            <div className="flex items-center space-x-3">
-                                                                <div className={`size-9 rounded-xl flex items-center justify-center ${
-                                                                    isDropdownItemActive(item.dropdown)
-                                                                        ? 'bg-blue-500'
-                                                                        : isDark ? 'bg-gray-800/80' : 'bg-gray-100'
-                                                                }`}>
-                                                                    <item.icon className="w-5 h-5" />
-                                                                </div>
-                                                                <span className="font-medium">{item.label}</span>
-                                                            </div>
-                                                            <motion.div
-                                                                animate={{ rotate: activeDropdown === item.id ? 180 : 0 }}
-                                                                transition={{ duration: 0.2 }}
-                                                            >
-                                                                <ChevronDown className="w-5 h-5" />
-                                                            </motion.div>
-                                                        </motion.button>
+                                                    if (hasChildren) {
+                                                        e.preventDefault(); // ❌ jangan redirect kalau ada submenu
+                                                        setActiveSub(sub.label);
+                                                    } else {
+                                                        setActiveMenu(null);
+                                                    }
+                                                }}
+                                                className={`flex items-center justify-between p-2 rounded-lg text-sm text-slate-800 ${
+                                                    activeSub === sub.label
+                                                    ? "bg-gray-200"
+                                                    : "hover:bg-gray-100"
+                                                } ${isSoon ? "opacity-70" : ""}`}
+                                                >
+                                                <div className="flex items-center gap-2">
+                                                    {sub.icon && <sub.icon />}
+                                                    {sub.label}
+                                                </div>
 
-                                                        <AnimatePresence>
-                                                            {activeDropdown === item.id && (
-                                                                <motion.div
-                                                                    initial={{ opacity: 0, y: -10 }}
-                                                                    animate={{ opacity: 1, y: 0 }}
-                                                                    exit={{ opacity: 0, y: -10 }}
-                                                                    className="pl-5 space-y-2"
-                                                                >
-                                                                    {item.dropdown.map((dropItem) => (
-                                                                        <MobileMenuItem
-                                                                            key={dropItem.path}
-                                                                            //@ts-ignore
-                                                                            href={dropItem.path}
-                                                                            icon={dropItem.icon}
-                                                                            label={dropItem.label}
-                                                                            isDark={isDark}
-                                                                            onClick={handleItemClick}
-                                                                            isActive={url.startsWith(dropItem.path)}
-                                                                        />
-                                                                    ))}
-                                                                </motion.div>
-                                                            )}
-                                                        </AnimatePresence>
-                                                    </div>
-                                                ) : (
-                                                    <MobileMenuItem
-                                                    //@ts-ignore
-                                                        href={item.path}
-                                                        icon={item.icon}
-                                                        label={item.label}
-                                                        isDark={isDark}
-                                                        onClick={handleItemClick}
-                                                        isActive={isPathActive(item.path)}
-                                                    />
+                                                {/* BADGE SOON */}
+                                                {isSoon && (
+                                                    <span className="text-[10px] bg-yellow-300 px-2 py-[2px] rounded">
+                                                        Soon
+                                                    </span>
+                                                )}
+
+                                                {/* ARROW */}
+                                                {hasChildren && <ChevronRight size={14} />}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                ))}
+                                </div>
+
+                                {/* SUB 2 */}
+                                {activeSub && (
+                                    <div className="border-l pl-6 min-w-[250px] space-y-3">
+                                        {item.children
+                                        .find((c) => c.label === activeSub)
+                                        ?.children?.map((sub2) => (
+                                            <div className="flex">
+                                                <Link
+                                                    href=""
+                                                    key={sub2.label}
+                                                    className="text-sm hover:text-blue-600 text-slate-800"
+                                                >
+                                                    {sub2.label}
+                                                </Link>
+                                                {/* 🔥 BADGE SOON */}
+                                                {sub2.soon && (
+                                                    <span className="ml-3 text-[10px] bg-yellow-300 px-2 py-[2px] rounded">
+                                                    Soon
+                                                    </span>
                                                 )}
                                             </div>
                                         ))}
                                     </div>
-
-                                    {/* Mobile Auth Section */}
-                                    <div className={`pt-4 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
-                                        {user ? (
-                                            <div className="space-y-2">
-                                                <MobileMenuItem
-                                                //@ts-ignore
-                                                    href="/dashboard"
-                                                    icon={FaTachometerAlt}
-                                                    label="Dashboard"
-                                                    isDark={isDark}
-                                                    onClick={handleItemClick}
-                                                    isActive={url === '/dashboard'}
-                                                />
-                                                <MobileMenuItem
-                                                //@ts-ignore
-                                                    href="/profile"
-                                                    icon={FaUser}
-                                                    label="Profile"
-                                                    isDark={isDark}
-                                                    onClick={handleItemClick}
-                                                    isActive={url === '/profile'}
-                                                />
-                                                <Link
-                                                    href="/logout"
-                                                    method="post"
-                                                    as="button"
-                                                    onClick={handleItemClick}
-                                                    className={`w-full flex items-center space-x-3 p-3 rounded-xl ${
-                                                        isDark
-                                                            ? 'text-red-400 hover:bg-red-900/20'
-                                                            : 'text-red-600 hover:bg-red-50'
-                                                    } transition-all duration-200`}
-                                                >
-                                                    <div className={`size-9 rounded-xl flex items-center justify-center ${
-                                                        isDark ? 'bg-red-900/30' : 'bg-red-50'
-                                                    }`}>
-                                                        <FaSignOutAlt className="w-5 h-5" />
-                                                    </div>
-                                                    <span className="font-medium">Logout</span>
-                                                </Link>
-                                            </div>
-                                        ) : (
-                                            <Link
-                                                href="/login"
-                                                className={`flex items-center space-x-3 p-3 rounded-xl ${
-                                                    isDark
-                                                        ? 'text-blue-400 hover:bg-blue-900/20'
-                                                        : 'text-blue-600 hover:bg-blue-50'
-                                                } transition-all duration-200`}
-                                                onClick={handleItemClick}
-                                            >
-                                                <div className={`size-9 rounded-xl flex items-center justify-center ${
-                                                    isDark ? 'bg-blue-900/30' : 'bg-blue-50'
-                                                }`}>
-                                                    <FaUser className="w-5 h-5" />
-                                                </div>
-                                                <span className="font-medium">Login</span>
-                                            </Link>
-                                        )}
-                                    </div>
-                                </div>
+                                )}
                             </div>
-                        </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+              ) :(
+                <div
+                  key={item.label}
+                  onMouseEnter={() => hasChild && handleEnter(item.label)}
+                  onMouseLeave={handleLeave}
+                  className="relative"
+                >
+                  <Link
+                    href={item.path}
+                    onClick={() =>
+                      hasChild &&
+                      setActiveMenu(
+                        activeMenu === item.label ? null : item.label
+                      )
+                    }
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-800 ${
+                      isParentActive(item)
+                        ? "bg-blue-600 text-white"
+                        : "hover:bg-gray-100"
+                    }`}
+                  >
+                    <item.icon />
+                    {item.label}
+                    {hasChild && (
+                      <ChevronDown
+                        className={`w-4 ${
+                          activeMenu === item.label ? "rotate-180" : ""
+                        }`}
+                      />
                     )}
-                </AnimatePresence>
-            </motion.nav>
+                  </Link>
 
-            {/* Bottom Navigation (Mobile) */}
-            {/* <div className="fixed bottom-0 left-0 right-0 md:hidden z-50">
-                <div className="mx-4 mb-4">
-                    <div className={`
-                        backdrop-blur-md rounded-2xl shadow-lg border
-                        ${isDark
-                            ? 'bg-gradient-to-r from-gray-900/90 to-gray-800/90 border-gray-700'
-                            : 'bg-gradient-to-r from-white/90 to-gray-50/90 border-gray-200'
+                  {/* MEGA MENU */}
+                    <AnimatePresence>
+                        {activeMenu === item.label && hasChild && (
+                            <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute left-0 right-0 mt-4 flex justify-center z-50"
+                            >
+                            <div className="w-min-[900px] bg-white rounded-2xl shadow-xl p-6 flex gap-6">
+
+                                {/* 🔥 HIGHLIGHT */}
+                                <div className="hidden md:flex w-[240px] bg-blue-600 text-white rounded-xl p-4 flex-col justify-between">
+                                <div>
+                                    <h3 className="font-semibold text-lg">
+                                    {item.label}
+                                    </h3>
+                                    <p className="text-sm opacity-90 mt-2">
+                                    Jelajahi berbagai fitur dan informasi menarik dari {item.label}.
+                                    </p>
+                                </div>
+                                </div>
+
+                                {/* SUB 1 */}
+                                <div className="flex gap-6">
+                                {chunk(item.children, 4).map((group, i) => (
+                                    <div key={i} className="space-y-3 min-w-[180px]">
+                                        {group.map((sub) => {
+                                            const isSoon = sub.soon;
+                                            const hasChildren = sub.children;
+
+                                            return (
+                                                <Link
+                                                key={sub.label}
+                                                href={isSoon ? "#" : sub.path || "#"}
+                                                onClick={(e) => {
+                                                    if (isSoon) {
+                                                        e.preventDefault(); // ❌ ga redirect
+                                                    }
+
+                                                    if (hasChildren) {
+                                                        e.preventDefault(); // ❌ jangan redirect kalau ada submenu
+                                                        setActiveSub(sub.label);
+                                                    } else {
+                                                        setActiveMenu(null);
+                                                    }
+                                                }}
+                                                className={`flex items-center justify-between p-2 rounded-lg text-sm ${
+                                                    activeSub === sub.label
+                                                    ? "bg-gray-200"
+                                                    : "hover:bg-gray-100"
+                                                } ${isSoon ? "opacity-70" : ""}`}
+                                                >
+                                                <div className="flex items-center gap-2">
+                                                    {sub.icon && <sub.icon />}
+                                                    {sub.label}
+                                                </div>
+
+                                                {/* BADGE SOON */}
+                                                {isSoon && (
+                                                    <span className="text-[10px] bg-yellow-300 px-2 py-[2px] rounded">
+                                                        Soon
+                                                    </span>
+                                                )}
+
+                                                {/* ARROW */}
+                                                {hasChildren && <ChevronRight size={14} />}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                ))}
+                                </div>
+
+                                {/* SUB 2 */}
+                                {activeSub && (
+                                    <div className="border-l pl-6 min-w-[250px] space-y-3">
+                                        {item.children
+                                        .find((c) => c.label === activeSub)
+                                        ?.children?.map((sub2) => (
+                                            <div className="flex">
+                                                <Link
+                                                    href=""
+                                                    key={sub2.label}
+                                                    className="text-sm hover:text-blue-600"
+                                                >
+                                                    {sub2.label}
+                                                </Link>
+                                                {/* 🔥 BADGE SOON */}
+                                                {sub2.soon && (
+                                                    <span className="ml-3 text-[10px] bg-yellow-300 px-2 py-[2px] rounded">
+                                                    Soon
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
+              )
+
+
+            })}
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex items-center gap-3">
+            <button onClick={() => setIsSearchOpen(true)}>
+              <Search className="text-slate-800" />
+            </button>
+
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden"
+            >
+              ☰
+            </button>
+
+            <Link
+              href="/login"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* MOBILE */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            className="fixed top-0 right-0 w-full h-full bg-white z-50 p-6 overflow-y-auto"
+          >
+            <button onClick={() => setMobileOpen(false)}>
+              <X />
+            </button>
+
+            {NAV.map((item) => (
+              <div key={item.label} className="mb-4">
+                <div
+                  onClick={() =>
+                    setMobileSub((prev) => ({
+                      ...prev,
+                      [item.label]: !prev[item.label]
+                    }))
+                  }
+                  className="flex justify-between items-center p-3 bg-gray-100 rounded-lg"
+                >
+                  <span>{item.label}</span>
+                  {item.children && <ChevronDown />}
+                </div>
+
+                {/* SUB 1 + SUB 2 */}
+                {mobileSub[item.label] &&
+                  item.children?.map((sub) => (
+                    <div key={sub.label} className="pl-4">
+                      <div
+                        onClick={() =>
+                          sub.children &&
+                          setMobileSub((prev) => ({
+                            ...prev,
+                            [sub.label]: !prev[sub.label]
+                          }))
                         }
-                    `}>
-                        <div className="absolute inset-0 rounded-2xl bg-white/5 backdrop-blur-sm" />
-                        <div className="relative grid grid-cols-4 items-center">
-                            {BOTTOM_NAV_ITEMS.map((item) => (
-                                <BottomNavItem
-                                    key={item.id || item.path}
-                                    item={item}
-                                    isActive={item.dropdown
-                                        ? isDropdownItemActive(item.dropdown)
-                                        : isPathActive(item.path)
-                                    }
-                                    isDark={isDark}
-                                    onItemClick={handleItemClick}
-                                />
+                        className="flex justify-between py-2 text-sm"
+                      >
+                        {sub.label}
+                        {sub.children && <ChevronDown size={14} />}
+                      </div>
+
+                      {sub.children && mobileSub[sub.label] && (
+                        <div className="pl-4">
+                          {sub.children.map((sub2) => (
+                            <div
+                              key={sub2.label}
+                              className="py-1 text-xs text-gray-600"
+                            >
+                              {sub2.label}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+        {/* MODAL SEARCH */}
+        <AnimatePresence>
+            {isSearchOpen && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsSearchOpen(false)} // ✅ klik luar
+                    className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-24"
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()} // ❗ biar klik dalam ga nutup
+                        className="bg-white w-full max-w-xl rounded-2xl shadow-xl p-4"
+                    >
+
+                    {/* INPUT */}
+                    <div className="flex items-center gap-2 border-b pb-2">
+                    <Search size={18} />
+                    <input
+                        autoFocus
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Cari apa saja..."
+                        className="w-full outline-none text-sm"
+                    />
+                    <button onClick={() => setIsSearchOpen(false)}>
+                        <X size={18} />
+                    </button>
+                    </div>
+
+                    {/* RESULTS */}
+                    <div className="max-h-[400px] overflow-y-auto mt-3 space-y-4">
+
+                    {/* LOADING */}
+                    {loading && (
+                        <p className="text-sm text-gray-500">Searching...</p>
+                    )}
+
+                    {/* EMPTY */}
+                    {!loading && results && isAllEmpty && (
+                        <div className="text-center py-6">
+                            <p className="text-sm text-gray-500">
+                            Tidak ada hasil untuk "<span className="font-semibold">{query}</span>"
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Saat belum ngetik apa-apa */}
+                    {!query && !loading && (
+                        <p className="text-sm text-gray-400 text-center py-6">
+                            Mulai ketik untuk mencari...
+                        </p>
+                    )}
+
+                    {/* ARTIKEL */}
+                    {results?.artikels?.length > 0 && (
+                        <div>
+                            <p className="text-xs font-semibold text-gray-400 mb-2">Artikel</p>
+                            {results.artikels.map(item => (
+                                <Link
+                                key={item.id}
+                                href={`/artikel/${item.slug}`}
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+                                onClick={() => setIsSearchOpen(false)}
+                                >
+                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
+                                    <div>
+                                        <p className="text-sm font-medium">{item.title}</p>
+                                        <p className="text-xs text-gray-500 line-clamp-3">{item.excerpt}</p>
+                                    </div>
+                                </Link>
                             ))}
                         </div>
+                    )}
+
+                    {/* PODCAST */}
+                    {results?.podcasts?.length > 0 && (
+                        <div>
+                            <p className="text-xs font-semibold text-gray-400 mb-2">Podcast</p>
+                            {results.podcasts.map(item => (
+                                <Link
+                                key={item.id}
+                                href={`/podcast/${item.slug}`}
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+                                >
+                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
+                                    <p className="text-sm">{item.title}</p>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* QUIZ */}
+                    {results?.quizzes?.length > 0 && (
+                        <div>
+                            <p className="text-xs font-semibold text-gray-400 mb-2">Kuis</p>
+                            {results.quizzes.map(item => (
+                                <Link
+                                key={item.id}
+                                href={`/quiz/${item.uuid}`}
+                                className="block p-2 rounded-lg hover:bg-gray-100 text-sm"
+                                >
+                                {item.title}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* GALERI */}
+                    {results?.galeris?.length > 0 && (
+                        <div>
+                            <p className="text-xs font-semibold text-gray-400 mb-2">Galeri</p>
+                            {results.galeris.map(item => (
+                                <Link
+                                key={item.id}
+                                href={`/galeri/${item.slug}`}
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+                                >
+                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
+                                    <p className="text-sm">{item.title}</p>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+
                     </div>
                 </div>
-            </div> */}
-
-
-
-            {/* Click Away Listener */}
-            {(isProfileOpen || isMenuOpen || activeDropdown) && (
-                <div
-                    className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
-                    onClick={() => {
-                        setIsProfileOpen(false);
-                        setIsMenuOpen(false);
-                        setActiveDropdown(null);
-                    }}
-                />
+                </motion.div>
             )}
-        </>
-    );
+        </AnimatePresence>
+    </>
+  );
 };
 
-export default memo(Navbar);
+export default Navbar;

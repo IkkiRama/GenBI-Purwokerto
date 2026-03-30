@@ -9,19 +9,19 @@ class OrganisasiController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Organisasi', []);
+        return Inertia::render('Struktur/Organisasi', []);
     }
 
     public function perKepengurusan(string $periode)
     {
-        return Inertia::render('SejarahPerKepengurusan', [
+        return Inertia::render('Struktur/SejarahPerKepengurusan', [
             "periode" => (string) $periode
         ]);
     }
 
     public function sejarahKepengurusan()
     {
-        return Inertia::render('SejarahKepengurusan', []);
+        return Inertia::render('Struktur/SejarahKepengurusan', []);
     }
 
     public function detailBidang(string $periode, string $namaBidang)
@@ -31,6 +31,6 @@ class OrganisasiController extends Controller
             'namaBidang' => (string) $namaBidang,
         ];
 
-        return Inertia::render('DetailStruktur', $validatedData);
+        return Inertia::render('Struktur/DetailStruktur', $validatedData);
     }
 }

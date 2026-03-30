@@ -11,7 +11,6 @@ import {
     FaHistory
 } from 'react-icons/fa';
 import { useAuth } from '@/Hooks/useAuth';
-import { useTheme } from '@/Hooks/useTheme';
 import { BookOpen } from 'lucide-react';
 import { IconGallery } from '@irsyadadl/paranoid';
 
@@ -271,14 +270,13 @@ const DesktopNavItem = memo(({ item, isActive, isDark, activeDropdown, onDropdow
 //     );
 // });
 
-const Navbar = () => {
+const Navbar = ({isDark}) => {
     const { url } = usePage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const { user } = useAuth();
-    const { isDark } = useTheme();
 
     // Check if current path matches any dropdown item
     const isDropdownItemActive = useCallback((dropdownItems) => {
@@ -379,7 +377,7 @@ const Navbar = () => {
                         <div className="hidden md:flex items-center space-x-4">
                             {/* Theme Toggle */}
                             {/* <button
-                                onClick={toggleTheme}
+                                onClick={setIsDark((s) => !s)}
                                 className={`p-2 rounded-full transition-all duration-200 ${
                                     isDark
                                         ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700 border border-gray-700'
@@ -474,7 +472,7 @@ const Navbar = () => {
                         {/* Mobile Menu Button */}
                         <div className="md:hidden flex items-center space-x-2">
                             {/* <button
-                                onClick={toggleTheme}
+                                onClick={setIsDark((s) => !s)}
                                 className={`p-2 rounded-full transition-all duration-200 ${
                                     isDark
                                         ? 'bg-gray-800 text-yellow-400 border border-gray-700'

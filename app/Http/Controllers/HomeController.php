@@ -13,7 +13,7 @@ class HomeController extends Controller
     }
     public function genbiPoint()
     {
-        return Inertia::render('GenbiPoint', []);
+        return Inertia::render('Tentang Kami/GenbiPoint', []);
     }
 
 }

@@ -4,23 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import MainLayout from '@/Layouts/MainLayout';
 import { estimateReadingTime } from "@/Utils/estimateReadingTime";
-import { changeDate } from './../Utils/changeDate';
+import { changeDate } from '../../Utils/changeDate';
 import { Head, Link } from "@inertiajs/react";
 
 import ShareButton from "@/Components/ShareButton";
 import { getRandomColor } from "@/Utils/getRandomColor";
 import { useTheme } from "@/Hooks/useTheme";
-
-// --- NOTE ---
-// This file is an enhanced version of your DetailArtikel component.
-// Additions made:
-// 1. Page transition using framer-motion
-// 2. Shimmer gradient skeletons (article + cards)
-// 3. Tab/filter UI with animated list transitions (AnimatePresence)
-// 4. Improved dark-mode handling & prefers-color-scheme fallback
-// 5. Accessibility improvements: proper roles, aria-* attributes, live regions
-// 6. Small SEO/accessibility tweaks: semantic tags, <time> element, alt text, form aria labels
-// 7. Minor performance: useMemo where appropriate and defensive checks
 
 interface DetailArtikelProps {
   slug: string;

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ArtikelController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Artikel', []);
+        return Inertia::render('Artikel/Artikel', []);
     }
 
     public function show(string $slug)
@@ -18,7 +17,7 @@ class ArtikelController extends Controller
             'slug' => (string) $slug,
         ];
 
-        return Inertia::render('DetailArtikel', $validatedData);
+        return Inertia::render('Artikel/DetailArtikel', $validatedData);
     }
 
     public function showKategori(string $slug)
@@ -27,6 +26,6 @@ class ArtikelController extends Controller
             'slug' => (string) $slug,
         ];
 
-        return Inertia::render('DetailKategoriArtikel', $validatedData);
+        return Inertia::render('Artikel/DetailKategoriArtikel', $validatedData);
     }
 }
