@@ -26,8 +26,12 @@ import {
   FaImages,
   FaBookOpen,
   FaLaptopCode,
-  FaSearch
+  FaSearch,
+  FaCalendarAlt
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { IconHamburger } from "@irsyadadl/paranoid";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 const Navbar = () => {
   const { url } = usePage();
@@ -42,6 +46,8 @@ const Navbar = () => {
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+
     const isAllEmpty = results &&
     (!results.artikels?.length &&
     !results.podcasts?.length &&
@@ -51,11 +57,36 @@ const Navbar = () => {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
+    const getInitial = (name) => {
+        if (!name) return "?";
+
+        const words = name.trim().split(" ");
+
+        if (words.length === 1) {
+            return words[0][0].toUpperCase();
+        }
+
+        return (words[0][0] + words[1][0]).toUpperCase();
+    };
+
+    useEffect(() => {
+        const delay = setTimeout(() => {
+            fetchSearch()
+        }, 300)
+
+        return () => clearTimeout(delay)
+    }, [query])
+
   const NAV = [
     {
       label: "Beranda",
       path: "/",
       icon: FaHome
+    },
+    {
+      label: "Event",
+      path: "/event",
+      icon: FaCalendarAlt
     },
     {
       label: "Tentang Kami",
@@ -225,14 +256,14 @@ const Navbar = () => {
   return (
     <>
       {/* NAVBAR */}
-      <div className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md shadow">
+      <div className="fixed top-0 w-full z-60 bg-white/80 backdrop-blur-md shadow ">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/">
             <img src="/images/genbi-logo.png" className="h-8" />
           </Link>
 
           {/* DESKTOP */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4 z-60">
             {NAV.map((item) => {
               const hasChild = item.children;
 
@@ -439,11 +470,11 @@ const Navbar = () => {
                                                 href={isSoon ? "#" : sub.path || "#"}
                                                 onClick={(e) => {
                                                     if (isSoon) {
-                                                        e.preventDefault(); // ❌ ga redirect
+                                                        e.preventDefault(); // ga redirect
                                                     }
 
                                                     if (hasChildren) {
-                                                        e.preventDefault(); // ❌ jangan redirect kalau ada submenu
+                                                        e.preventDefault(); // jangan redirect kalau ada submenu
                                                         setActiveSub(sub.label);
                                                     } else {
                                                         setActiveMenu(null);
@@ -521,15 +552,33 @@ const Navbar = () => {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden"
             >
-              ☰
+              {/* <HamburgerMenuIcon className="text-gray-600 dark:text-gray-700" ></HamburgerMenuIcon> */}
+              <IconHamburger className="text-gray-600 dark:text-gray-700" ></IconHamburger>
             </button>
 
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-            >
-              Login
-            </Link>
+            {isAuthenticated ? (
+                <div className="relative">
+                    <Link href="/dashboard"
+                    className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-700">
+                    {user?.foto ? (
+                        <img
+                            src={user.foto}
+                            alt={user.name}
+                            className="w-[35px] h-[35px] rounded-full object-cover"
+                        />
+                    ) : (
+                        <span>{getInitial(user?.name)}</span>
+                    )}
+                    </Link>
+                </div>
+            ) : (
+                <Link
+                    href="/login"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+                >
+                    Login
+                </Link>
+            )}
           </div>
         </div>
       </div>
@@ -541,61 +590,123 @@ const Navbar = () => {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            className="fixed top-0 right-0 w-full h-full bg-white z-50 p-6 overflow-y-auto"
+            className="fixed top-0 right-0 w-full h-full bg-white z-50 p-6 overflow-y-auto py-24"
           >
             <button onClick={() => setMobileOpen(false)}>
               <X />
             </button>
 
-            {NAV.map((item) => (
-              <div key={item.label} className="mb-4">
-                <div
-                  onClick={() =>
-                    setMobileSub((prev) => ({
-                      ...prev,
-                      [item.label]: !prev[item.label]
-                    }))
-                  }
-                  className="flex justify-between items-center p-3 bg-gray-100 rounded-lg"
-                >
-                  <span>{item.label}</span>
-                  {item.children && <ChevronDown />}
-                </div>
+            {NAV.map((item) => {
+                const hasChildren = item.children;
 
-                {/* SUB 1 + SUB 2 */}
-                {mobileSub[item.label] &&
-                  item.children?.map((sub) => (
-                    <div key={sub.label} className="pl-4">
-                      <div
+                return (
+                    <div key={item.label} className="mb-4">
+
+                    {/* Kalau ADA children → toggle */}
+                    {hasChildren ? (
+                        <div
                         onClick={() =>
-                          sub.children &&
-                          setMobileSub((prev) => ({
+                            setMobileSub((prev) => ({
                             ...prev,
-                            [sub.label]: !prev[sub.label]
-                          }))
+                            [item.label]: !prev[item.label],
+                            }))
                         }
-                        className="flex justify-between py-2 text-sm"
-                      >
-                        {sub.label}
-                        {sub.children && <ChevronDown size={14} />}
-                      </div>
-
-                      {sub.children && mobileSub[sub.label] && (
-                        <div className="pl-4">
-                          {sub.children.map((sub2) => (
-                            <div
-                              key={sub2.label}
-                              className="py-1 text-xs text-gray-600"
-                            >
-                              {sub2.label}
-                            </div>
-                          ))}
+                        className="flex justify-between items-center p-3 bg-gray-100 rounded-lg cursor-pointer text-slate-600 dark:text-slate-800"
+                        >
+                        <span>{item.label}</span>
+                        <ChevronDown
+                            className={`transition ${
+                            mobileSub[item.label] ? "rotate-180" : ""
+                            }`}
+                        />
                         </div>
-                      )}
+                    ) : (
+                        /* Kalau TIDAK ADA children → LINK */
+                        <Link
+                        href={item.path}
+                        onClick={() => setMobileOpen(false)}
+                        className="flex justify-between items-center p-3 bg-gray-100 rounded-lg text-slate-600 dark:text-slate-800"
+                        >
+                        <span>{item.label}</span>
+                        </Link>
+                    )}
+
+                    {/* SUB MENU */}
+                    {hasChildren && mobileSub[item.label] && (
+                        <div>
+                        {item.children.map((sub) => {
+                            const hasSubChildren = sub.children;
+                            const isSoon = sub.soon;
+
+                            return (
+                            <div key={sub.label} className="pl-2">
+
+                                {/* SUB LEVEL 1 */}
+                                {hasSubChildren ? (
+                                <div
+                                    onClick={() =>
+                                    setMobileSub((prev) => ({
+                                        ...prev,
+                                        [sub.label]: !prev[sub.label],
+                                    }))
+                                    }
+                                    className="flex justify-between p-2 px-3 hover:bg-gray-100 rounded-lg text-base cursor-pointer text-slate-600 dark:text-slate-800"
+                                >
+                                    <span className="flex items-center gap-2">
+                                    {sub.label}
+                                    {isSoon && (
+                                        <span className="text-[10px] px-[7px] py-[1px] bg-yellow-300 rounded font-semibold">
+                                        Soon
+                                        </span>
+                                    )}
+                                    </span>
+
+                                    <ChevronDown size={14} />
+                                </div>
+                                ) : (
+                                <Link
+                                    href={isSoon ? "#" : sub.path || "#"}
+                                    onClick={(e) => {
+                                    if (isSoon) e.preventDefault();
+                                    setMobileOpen(false);
+                                    }}
+                                    className="block p-2 px-3 text-base hover:bg-gray-100 rounded-lg text-slate-600 dark:text-slate-800"
+                                >
+                                    {sub.label}
+                                </Link>
+                                )}
+
+                                {/* SUB LEVEL 2 */}
+                                {hasSubChildren && mobileSub[sub.label] && (
+                                <div className="pl-6">
+                                    {sub.children.map((sub2) => (
+                                    <Link
+                                        key={sub2.label}
+                                        href={sub2.soon ? "#" : sub2.path || "#"}
+                                        onClick={(e) => {
+                                        if (sub2.soon) e.preventDefault();
+                                        setMobileOpen(false);
+                                        }}
+                                        className="flex py-2 text-sm text-gray-600 gap-3 dark:text-slate-800"
+                                    >
+                                        {sub2.label}
+                                        {isSoon && (
+                                            <span className="text-[8px] px-[4px] py-[1px] bg-yellow-300 rounded font-semibold">
+                                            Soon
+                                            </span>
+                                        )}
+                                    </Link>
+                                    ))}
+                                </div>
+                                )}
+                            </div>
+                            );
+                        })}
+                        </div>
+                    )}
                     </div>
-                  ))}
-              </div>
-            ))}
+                );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -604,129 +715,185 @@ const Navbar = () => {
         <AnimatePresence>
             {isSearchOpen && (
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setIsSearchOpen(false)} // ✅ klik luar
-                    className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-24"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSearchOpen(false)}
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center pt-24 px-4"
                 >
-                    <div
-                        onClick={(e) => e.stopPropagation()} // ❗ biar klik dalam ga nutup
-                        className="bg-white w-full max-w-xl rounded-2xl shadow-xl p-4"
-                    >
+                <motion.div
+                    initial={{ y: -20, opacity: 0, scale: 0.98 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-full max-w-xl rounded-2xl shadow-2xl border
+                    bg-white dark:bg-zinc-900 dark:border-zinc-700"
+                >
 
                     {/* INPUT */}
-                    <div className="flex items-center gap-2 border-b pb-2">
-                    <Search size={18} />
+                    <div className="flex items-center gap-3 px-4 py-3 border-b
+                    border-gray-200 dark:border-zinc-700">
+
+                    <Search className="text-gray-400 dark:text-gray-500" size={18} />
+
                     <input
                         autoFocus
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Cari apa saja..."
-                        className="w-full outline-none text-sm"
+                        placeholder="Cari artikel, podcast, kuis..."
+                        className="w-full outline-none text-sm bg-transparent
+                        text-gray-800 dark:text-gray-100 placeholder-gray-400 rounded-lg "
                     />
-                    <button onClick={() => setIsSearchOpen(false)}>
+
+                    {query && (
+                        <button
+                        onClick={() => setQuery("")}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                        >
                         <X size={18} />
-                    </button>
+                        </button>
+                    )}
                     </div>
 
                     {/* RESULTS */}
-                    <div className="max-h-[400px] overflow-y-auto mt-3 space-y-4">
+                    <div className="max-h-[420px] overflow-y-auto px-2 py-3 space-y-4">
 
                     {/* LOADING */}
                     {loading && (
-                        <p className="text-sm text-gray-500">Searching...</p>
-                    )}
-
-                    {/* EMPTY */}
-                    {!loading && results && isAllEmpty && (
-                        <div className="text-center py-6">
-                            <p className="text-sm text-gray-500">
-                            Tidak ada hasil untuk "<span className="font-semibold">{query}</span>"
-                            </p>
+                        <div className="flex items-center justify-center py-6">
+                        <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                         </div>
                     )}
 
-                    {/* Saat belum ngetik apa-apa */}
+                    {/* EMPTY QUERY */}
                     {!query && !loading && (
-                        <p className="text-sm text-gray-400 text-center py-6">
-                            Mulai ketik untuk mencari...
+                        <p className="text-sm text-center text-gray-500 py-6">
+                        Mulai ketik untuk mencari sesuatu...
                         </p>
                     )}
 
-                    {/* ARTIKEL */}
-                    {results?.artikels?.length > 0 && (
-                        <div>
-                            <p className="text-xs font-semibold text-gray-400 mb-2">Artikel</p>
-                            {results.artikels.map(item => (
-                                <Link
-                                key={item.id}
-                                href={`/artikel/${item.slug}`}
-                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
-                                onClick={() => setIsSearchOpen(false)}
-                                >
-                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
-                                    <div>
-                                        <p className="text-sm font-medium">{item.title}</p>
-                                        <p className="text-xs text-gray-500 line-clamp-3">{item.excerpt}</p>
-                                    </div>
-                                </Link>
-                            ))}
+                    {/* NO RESULT */}
+                    {!loading && query && isAllEmpty && (
+                        <div className="text-center py-6">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Tidak ditemukan hasil untuk{" "}
+                            <span className="font-semibold text-gray-700 dark:text-white">
+                            "{query}"
+                            </span>
+                        </p>
                         </div>
                     )}
 
-                    {/* PODCAST */}
-                    {results?.podcasts?.length > 0 && (
-                        <div>
-                            <p className="text-xs font-semibold text-gray-400 mb-2">Podcast</p>
-                            {results.podcasts.map(item => (
-                                <Link
-                                key={item.id}
-                                href={`/podcast/${item.slug}`}
-                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
-                                >
-                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
-                                    <p className="text-sm">{item.title}</p>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* QUIZ */}
-                    {results?.quizzes?.length > 0 && (
-                        <div>
-                            <p className="text-xs font-semibold text-gray-400 mb-2">Kuis</p>
-                            {results.quizzes.map(item => (
-                                <Link
-                                key={item.id}
-                                href={`/quiz/${item.uuid}`}
-                                className="block p-2 rounded-lg hover:bg-gray-100 text-sm"
-                                >
+                    {/* SECTION COMPONENT */}
+                    {[
+                        {
+                        title: "Artikel",
+                        data: results?.artikels,
+                        render: (item) => (
+                            <Link
+                            key={item.id}
+                            href={`/artikel/${item.slug}`}
+                            onClick={() => setIsSearchOpen(false)}
+                            className="flex gap-3 p-2 rounded-xl hover:bg-gray-100
+                            dark:hover:bg-zinc-800 transition"
+                            >
+                            <img
+                                src={
+                                item.thumbnail
+                                    ? BASE_URL + `/storage/${item.thumbnail}`
+                                    : "./images/NO IMAGE AVAILABLE.jpg"
+                                }
+                                className="w-16 h-16 rounded-lg object-cover"
+                            />
+                            <div>
+                                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                                 {item.title}
-                                </Link>
-                            ))}
-                        </div>
+                                </p>
+                                <p className="text-xs text-gray-500 line-clamp-2">
+                                {item.excerpt}
+                                </p>
+                            </div>
+                            </Link>
+                        ),
+                        },
+                        {
+                        title: "Podcast",
+                        data: results?.podcasts,
+                        render: (item) => (
+                            <Link
+                            key={item.id}
+                            href={`/podcast/${item.slug}`}
+                            className="flex gap-3 p-2 rounded-xl hover:bg-gray-100
+                            dark:hover:bg-zinc-800 transition"
+                            >
+                            <img
+                                src={
+                                item.thumbnail
+                                    ? BASE_URL + `/storage/${item.thumbnail}`
+                                    : "./images/NO IMAGE AVAILABLE.jpg"
+                                }
+                                className="w-16 h-16 rounded-lg object-cover"
+                            />
+                            <p className="text-sm text-gray-800 dark:text-gray-100">
+                                {item.title}
+                            </p>
+                            </Link>
+                        ),
+                        },
+                        {
+                        title: "Kuis",
+                        data: results?.quizzes,
+                        render: (item) => (
+                            <Link
+                            key={item.id}
+                            href={`/quiz/${item.uuid}`}
+                            className="block p-2 rounded-xl hover:bg-gray-100
+                            dark:hover:bg-zinc-800 text-sm text-gray-800 dark:text-gray-100"
+                            >
+                            {item.title}
+                            </Link>
+                        ),
+                        },
+                        {
+                        title: "Galeri",
+                        data: results?.galeris,
+                        render: (item) => (
+                            <Link
+                            key={item.id}
+                            href={`/galeri/${item.slug}`}
+                            className="flex gap-3 p-2 rounded-xl hover:bg-gray-100
+                            dark:hover:bg-zinc-800 transition"
+                            >
+                            <img
+                                src={
+                                item.thumbnail
+                                    ? BASE_URL + `/storage/${item.thumbnail}`
+                                    : "./images/NO IMAGE AVAILABLE.jpg"
+                                }
+                                className="w-16 h-16 rounded-lg object-cover"
+                            />
+                            <p className="text-sm text-gray-800 dark:text-gray-100">
+                                {item.title}
+                            </p>
+                            </Link>
+                        ),
+                        },
+                    ].map(
+                        (section) =>
+                        section.data?.length > 0 && (
+                            <div key={section.title}>
+                            <p className="text-xs font-semibold text-gray-400 px-2 mb-2 uppercase tracking-wide">
+                                {section.title}
+                            </p>
+                            <div className="space-y-1">
+                                {section.data.map(section.render)}
+                            </div>
+                            </div>
+                        )
                     )}
-
-                    {/* GALERI */}
-                    {results?.galeris?.length > 0 && (
-                        <div>
-                            <p className="text-xs font-semibold text-gray-400 mb-2">Galeri</p>
-                            {results.galeris.map(item => (
-                                <Link
-                                key={item.id}
-                                href={`/galeri/${item.slug}`}
-                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
-                                >
-                                    <img src={item.thumbnail ? BASE_URL + `/storage/${item.thumbnail}` : "./images/NO IMAGE AVAILABLE.jpg"} alt={item.title} className="w-20 h-20 rounded object-cover" />
-                                    <p className="text-sm">{item.title}</p>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-
                     </div>
-                </div>
+                </motion.div>
                 </motion.div>
             )}
         </AnimatePresence>

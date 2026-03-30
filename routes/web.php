@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ArtikelController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\GaleriController;
 use App\Http\Controllers\OrganisasiController;
@@ -54,5 +55,10 @@ Route::get('/kuis/mulai/{uuid}', [QuizController::class, 'start'])->name('kuis s
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe.store');
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
-// Route::get('/auth-success/{token}', [AuthController::class, 'authSuccess'])->name('auth-success');
 Route::get('/auth-success', [AuthController::class, 'authSuccess'])->name('auth-success');
+
+
+Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+Route::get('/dashboard/artikel/buat', [DashboardController::class, 'createArtikel'])->name('CreateArtikel');
+Route::get('/dashboard/artikel', [DashboardController::class, 'artikel'])->name('dashboardArtikel');
+Route::get('/dashboard/settings', [DashboardController::class, 'accountSettings'])->name('accountSettings');

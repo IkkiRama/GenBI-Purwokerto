@@ -325,3 +325,16 @@ html.dark .MuiAccordionDetails-root.css-15v22id-MuiAccordionDetails-root {
 .marquee-down-vertical {
     animation: marquee-down-vertical 30s linear infinite;
 }
+
+
+.quill-wrapper .ql-container {
+    min-height: 250px;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 5rem;
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.quill-wrapper .ql-editor {
+    min-height: 250px;
+}

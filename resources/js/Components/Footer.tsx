@@ -4,7 +4,7 @@ import { Instagram, Youtube, Phone, Mail, MapPin } from 'lucide-react';
 
 const Footer = () => (
   <motion.footer
-    className="bg-blue-900 text-white"
+    className="bg-blue-900 text-white z-30 relative"
     initial={{ opacity: 0 }}
     whileInView={{ opacity: 1 }}
     transition={{ duration: 0.5 }}
@@ -72,6 +72,7 @@ const Footer = () => (
             <h3 className="text-lg font-bold mb-4">Navigasi</h3>
             <ul className="space-y-2 text-base text-blue-100">
             <li><Link href="/">Beranda</Link></li>
+            <li><Link href="/event">Event</Link></li>
             <li><Link href="/tentang">Tentang GenBI</Link></li>
             <li><Link href="/organisasi">Organisasi</Link></li>
             <li><Link href="/sejarah-kepengurusan">Sejarah</Link></li>
@@ -83,8 +84,6 @@ const Footer = () => (
             <li className="flex items-center gap-2 opacity-60">
                 Pengumuman <span className="text-[10px] bg-yellow-300 text-black px-2 rounded">Soon</span>
             </li>
-
-            <li><Link href="/contact">Kontak</Link></li>
 
             <li className="flex items-center gap-2 opacity-60">
                 Statistik <span className="text-[10px] bg-yellow-300 text-black px-2 rounded">Soon</span>

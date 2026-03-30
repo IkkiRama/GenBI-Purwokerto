@@ -5,6 +5,43 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ThemeProvider } from './Contexts/ThemeContext';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './Store/store';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setTheme } from "@/Store/themeSlice";
+import { useSelector } from "react-redux";
+import { fetchUser } from "@/Store/authSlice";
+
+function AppWrapper({ children }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    dispatch(fetchUser());
+
+    if (stored) {
+      dispatch(setTheme(stored === "dark"));
+    } else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      dispatch(setTheme(prefersDark));
+    }
+  }, []);
+
+  return children;
+}
+
+export function ThemeSync() {
+  const isDark = useSelector((state) => state.theme.isDark);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  }, [isDark]);
+
+  return null;
+}
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'GenBI Purwokerto';
 
@@ -25,7 +62,12 @@ createInertiaApp({
         root.render(
             <BrowserRouter>
                 <ThemeProvider>
-                    <App {...props} />
+                    <Provider store={store}>
+                        <AppWrapper>
+                            <ThemeSync />
+                            <App {...props} />
+                        </AppWrapper>
+                    </Provider>
                 </ThemeProvider>
             </BrowserRouter>
         );
