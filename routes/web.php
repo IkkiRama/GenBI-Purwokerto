@@ -59,6 +59,10 @@ Route::get('/auth-success', [AuthController::class, 'authSuccess'])->name('auth-
 
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-Route::get('/dashboard/artikel/buat', [DashboardController::class, 'createArtikel'])->name('CreateArtikel');
+
 Route::get('/dashboard/artikel', [DashboardController::class, 'artikel'])->name('dashboardArtikel');
+Route::get('/dashboard/artikel/buat', [DashboardController::class, 'createArtikel'])->name('CreateArtikel');
+Route::get('/dashboard/artikel/edit/{slug}', [DashboardController::class, 'editArtikel'])->name('EditArtikel');
+Route::get('/dashboard/artikel/komentar', [DashboardController::class, 'komentar'])->name('komentar');
+
 Route::get('/dashboard/settings', [DashboardController::class, 'accountSettings'])->name('accountSettings');

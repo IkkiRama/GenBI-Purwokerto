@@ -7,16 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Dashboard() {
   const dispatch = useDispatch();
+  const { user, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(setActiveMenu("Dashboard"));
   }, [dispatch]);
 
-    // const auth = useSelector((state) => state.auth);
-
-    // useEffect(() => {
-    // console.log("AUTH STATE:", auth);
-    // }, [auth]);
 
   return (
     <DashboardLayout title="Dashboard | Generasi Baru Indonesia Purwokerto">
@@ -32,12 +28,12 @@ export default function Dashboard() {
         >
           <div className="absolute right-0 top-0 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
 
-          <h1 className="text-2xl md:text-3xl font-bold">
-            Selamat Datang, Aditya Perkasa
-          </h1>
-          <p className="mt-2 text-sm opacity-90 max-w-lg">
-            Pantau perkembangan literasi ekonomi dan kontribusi kamu dalam ekosistem hari ini.
-          </p>
+             <h1 className="text-2xl md:text-3xl font-bold">
+                Selamat Datang, {loading ? "..." : user?.name || "User"}
+            </h1>
+            <p className="mt-2 text-sm opacity-90">
+                Pantau perkembangan literasi ekonomi dan kontribusi kamu dalam ekosistem hari ini.
+            </p>
         </motion.div>
 
         {/* STATS */}

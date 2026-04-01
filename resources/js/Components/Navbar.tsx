@@ -252,6 +252,14 @@ const Navbar = () => {
         };
     }, [isSearchOpen]);
 
+    const getFotoUrl = (foto) => {
+        if (!foto) return null;
+
+        if (foto.startsWith("http")) return foto;
+
+        return `${BASE_URL}/storage/${foto}`;
+    };
+
 
   return (
     <>
@@ -561,11 +569,22 @@ const Navbar = () => {
                     <Link href="/dashboard"
                     className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-700">
                     {user?.foto ? (
-                        <img
-                            src={user.foto}
-                            alt={user.name}
-                            className="w-[35px] h-[35px] rounded-full object-cover"
-                        />
+                        <div className="relative">
+                            <Link
+                            href="/dashboard"
+                            className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-700"
+                            >
+                            {user?.foto ? (
+                                <img
+                                src={getFotoUrl(user.foto)}
+                                alt={user.name}
+                                className="w-[35px] h-[35px] rounded-full object-cover"
+                                />
+                            ) : (
+                                <span>{getInitial(user?.name)}</span>
+                            )}
+                            </Link>
+                        </div>
                     ) : (
                         <span>{getInitial(user?.name)}</span>
                     )}

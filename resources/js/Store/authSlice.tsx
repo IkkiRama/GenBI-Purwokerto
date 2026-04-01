@@ -12,9 +12,11 @@ export const fetchUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get("/api/me");
-      return res.data;
+
+      return res;
+
     } catch (err) {
-      return rejectWithValue(err.response?.data);
+      return rejectWithValue(err.data);
     }
   }
 );

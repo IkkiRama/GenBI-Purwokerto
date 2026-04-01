@@ -10,6 +10,7 @@ import { Head, Link } from "@inertiajs/react";
 import ShareButton from "@/Components/ShareButton";
 import { getRandomColor } from "@/Utils/getRandomColor";
 import { useTheme } from "@/Hooks/useTheme";
+import { Lock, LogIn } from "lucide-react";
 
 interface DetailArtikelProps {
   slug: string;
@@ -18,16 +19,15 @@ interface DetailArtikelProps {
 interface ArtikelType {
   id: number;
   title: string;
-  excerpt: string;
+  slug?: string;
   content: string;
-  thumbnail?: string | null;
   keyword?: string;
+  thumbnail?: string | null;
   updated_at?: string;
   published_at?: string;
-  kategori_artikel?: { nama: string };
-  user?: { name: string; foto?: string | null; deskripsi?: string };
+  kategori?: { nama: string };
+  author?: { name: string; foto?: string | null; deskripsi?: string };
   komentar?: Array<{ nama: string; email: string; komentar: string }>;
-  slug?: string;
 }
 
 const pageVariants = {
@@ -53,9 +53,6 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   //@ts-ignore
   const [errorArtikelTerbaru, setErrorArtikelTerbaru] = useState<string | null>(null);
 
-
-  const [nama, setNama] = useState("");
-  const [email, setEmail] = useState("");
   const [komen, setKomen] = useState("");
   const [komenEror, setKomenEror] = useState("");
   const [loadingKomen, setLoadingKomen] = useState(false);
@@ -76,6 +73,13 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
 
   // Tabs: 'terbaru' | 'rekomendasi' (animated)
   const [activeTab, setActiveTab] = useState<'terbaru' | 'rekomendasi'>('terbaru');
+
+  //   CEK LOGIN
+  const token = typeof window !== "undefined"
+  ? localStorage.getItem("token")
+  : null;
+
+  const isLoggedIn = !!token;
 
   // Sync theme
   useEffect(() => {
@@ -163,21 +167,18 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
     setSuccessMessage("");
 
     try {
-      if (!nama.trim()) throw new Error("Nama tidak boleh kosong.");
-      if (!email.trim()) throw new Error("Email tidak boleh kosong.");
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Format email tidak valid.");
       if (!komen.trim()) throw new Error("Komentar tidak boleh kosong.");
 
       const response = await fetch(BASE_URL+'/api/komen', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ artikel_id: artikel?.id, nama, email, komentar: komen }),
+        body: JSON.stringify({ artikel_id: artikel?.id, komentar: komen }),
       });
 
       if (!response.ok) throw new Error('Gagal mengirim komentar, coba lagi nanti.');
 
       setSuccessMessage('Komentar Anda berhasil dikirim!');
-      setNama(""); setEmail(""); setKomen("");
+      setKomen("");
       await fetchData();
     } catch (err: any) {
       setKomenEror(err?.message || 'Terjadi kesalahan.');
@@ -197,13 +198,13 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   if (error || errorRandomArtikel) return <p role="alert">Error: {error || errorRandomArtikel}</p>;
 
   return (
-    <MainLayout isDark={isDark} title={artikel?.title ?? "Detail Artikel"}>
+    <MainLayout title={artikel?.title ?? "Detail Artikel"}>
 
       <Head>
-        <meta name="description" content={artikel?.excerpt ?? 'Artikel GenBI Purwokerto'} />
+        {/* <meta name="description" content={artikel?.excerpt ?? 'Artikel GenBI Purwokerto'} /> */}
         <meta name="keywords" content={artikel?.keyword ?? ''} />
         <meta property="og:title" content={artikel?.title ?? 'Detail Artikel - GenBI Purwokerto'} />
-        <meta property="og:description" content={artikel?.excerpt ?? ''} />
+        {/* <meta property="og:description" content={artikel?.excerpt ?? ''} /> */}
         <meta property="og:image" content={artikel?.thumbnail ? BASE_URL+`/storage/${artikel.thumbnail}` : '../images/NO IMAGE AVAILABLE.jpg'} />
         <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/${slug}`} />
       </Head>
@@ -240,7 +241,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
                 ) : (
                     <>
                         <p className="font-semibold mb-2 text-blue-700 md:md:text-base text-[13px] text-sm">
-                            {artikel?.kategori_artikel?.nama ?? 'Umum'}
+                            {artikel?.kategori?.nama ?? 'Umum'}
                         </p>
                         <h1 className="lg:leading-[2.7rem] font-bold md:text-3xl text-xl mb-4 text-gray-900 dark:text-gray-200 h-auto">
                             {artikel?.title ?? (<span className="inline-block align-middle">&nbsp;</span>)}
@@ -286,11 +287,11 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
                 {/* Article content or skeleton */}
                 {loadingMain ? (
                     <div>
-                    <div className="skeleton-title h-8 w-3/4 mb-4" />
-                    <div className="skeleton-paragraph h-4 w-full mb-2" />
-                    <div className="skeleton-paragraph h-4 w-full mb-2" />
-                    <div className="skeleton-paragraph h-4 w-5/6 mb-2" />
-                    <div className="skeleton-block h-60 w-full rounded mt-6" />
+                        <div className="skeleton-title h-8 w-3/4 mb-4" />
+                        <div className="skeleton-paragraph h-4 w-full mb-2" />
+                        <div className="skeleton-paragraph h-4 w-full mb-2" />
+                        <div className="skeleton-paragraph h-4 w-5/6 mb-2" />
+                        <div className="skeleton-block h-60 w-full rounded mt-6" />
                     </div>
                 ) : (
                     <div>
@@ -306,61 +307,111 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
                     </div>
                 )}
 
-                {/* Komentar */}
-                <hr className="my-8" />
-                <h2 className="text-2xl font-semibold mb-4">KOMENTAR</h2>
+                    {/* Komentar */}
+                    <hr className="my-8" />
+                    <h2 className="text-2xl font-semibold mb-4">KOMENTAR</h2>
 
-                <div aria-live="polite" className="mb-4">
-                    {komentar.length === 0 && <p className="text-sm text-gray-500">Belum ada komentar.</p>}
-
-                    {komentar.map((item, index) => (
-                    <motion.div key={index} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-                        <div className="flex items-center mb-2">
-                            <div className={`w-[50px] h-[50px] text-white flex items-center justify-center rounded-full mr-3 ${warnaProfile}`}>
-                                <span className="font-bold">{getInitials(item.nama)}</span>
-                            </div>
-
-                            <div>
-                                <h4 className="text-lg font-bold">{item.nama}</h4>
-
-                                <p className="text-gray-700 dark:text-gray-300 lg:text-base md:text-sm text-[12px]">{item.email}</p>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-700 dark:text-gray-300 lg:text-base md:text-sm text-[12px] whitespace-pre-wrap">{item.komentar}</p>
-                    </motion.div>
-                    ))}
-                </div>
-
-                {/* Form Komentar */}
-                <form onSubmit={handleSubmit} className="bg-gray-100 dark:bg-gray-800 p-5 rounded-lg" aria-label="Form komentar">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label htmlFor="nama" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
-
-                            <input id="nama" name="nama" value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Masukkan nama Anda" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 text-gray-800" />
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-
-                            <input id="email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Masukkan email Anda" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300 text-gray-800" />
-                        </div>
-                    </div>
-
+                    {/* LIST KOMENTAR */}
                     <div className="mb-4">
-                        <label htmlFor="komentar" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Komentar</label>
+                        {komentar.length === 0 && (
+                            <p className="text-sm text-gray-500">Belum ada komentar.</p>
+                        )}
 
-                        <textarea id="komentar" name="komentar" value={komen} onChange={(e) => setKomen(e.target.value)} placeholder="Tulis komentar Anda..." rows={4} className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"></textarea>
+                        {komentar.map((item, index) => (
+                            <motion.div key={index} className="mb-6">
+
+                            <div className="flex items-center mb-2">
+                                <div className={`w-[50px] h-[50px] text-white flex items-center justify-center rounded-full mr-3 ${warnaProfile}`}>
+                                    <span className="font-bold">
+                                        {getInitials(item.user?.name || "User")}
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-lg font-bold">
+                                        {item.user?.name || "Anonymous"}
+                                    </h4>
+                                    <p className="text-gray-500 text-sm">
+                                        {item.user?.email || "-"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                                {item.komentar}
+                            </p>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    <button disabled={loadingKomen} type="submit" className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition" aria-disabled={loadingKomen}>
-                        {loadingKomen ? 'Mengirim...' : 'Kirim Komentar'}
-                    </button>
+                    {/* CONDITIONAL FORM */}
+                    {isLoggedIn ? (
+                        // FORM KOMENTAR (LOGIN)
+                        <form onSubmit={handleSubmit} className="bg-gray-100 dark:bg-gray-800 p-5 rounded-lg">
 
-                    {komenEror && <p role="alert" className="text-red-500 mt-2">{komenEror}</p>}
-                    {successMessage && <p role="status" className="text-green-500 mt-2">{successMessage}</p>}
-                </form>
+                            <div className="mb-4">
+                            <label className="block text-sm font-medium mb-2">
+                                Tulis Komentar
+                            </label>
+
+                            <textarea
+                                value={komen}
+                                onChange={(e) => setKomen(e.target.value)}
+                                placeholder="Bagikan pendapat kamu..."
+                                rows={4}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
+                            />
+                            </div>
+
+                            <button
+                            disabled={loadingKomen}
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                            >
+                                {loadingKomen ? 'Mengirim...' : 'Kirim Komentar'}
+                            </button>
+
+                            {komenEror && <p className="text-red-500 mt-2">{komenEror}</p>}
+                            {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
+                        </form>
+
+                    ) : (
+                        // BELUM LOGIN
+                        <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800
+                                    border border-gray-200 dark:border-gray-700
+                                    p-6 rounded-2xl text-center shadow-sm"
+                        >
+                            {/* ICON */}
+                            <div className="flex justify-center mb-3">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                                <Lock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                                </div>
+                            </div>
+
+                            {/* TEXT */}
+                            <h3 className="text-base font-semibold text-gray-800 dark:text-white">
+                                Login untuk Berkomentar
+                            </h3>
+
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-5">
+                                Gabung dulu supaya kamu bisa ikut diskusi dan kasih pendapatmu 💬
+                            </p>
+
+                            {/* BUTTON */}
+                            <Link
+                                href="/login"
+                                className="inline-flex items-center gap-2 px-5 py-2.5
+                                        bg-blue-600 text-white rounded-lg text-sm font-medium
+                                        hover:bg-blue-700 active:scale-95 transition"
+                            >
+                                <LogIn className="w-4 h-4" />
+                                Login Sekarang
+                            </Link>
+                        </motion.div>
+                    )}
 
                 </article>
 
@@ -377,9 +428,9 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
                     </div>
                     ) : (
                     <div>
-                        <img src={artikel?.user?.foto ? BASE_URL+`/storage/${artikel.user.foto}` : '../images/NO IMAGE AVAILABLE.jpg'} alt={`${artikel?.user?.name ?? 'Author'} avatar`} className="w-[70px] rounded" />
-                        <h3 className="font-bold mt-4 text-gray-800 dark:text-gray-300">{artikel?.user?.name}</h3>
-                        <p className="text-sm mt-2 text-gray-700 dark:text-gray-400">{artikel?.user?.deskripsi}</p>
+                        <img src={artikel?.author?.foto ? BASE_URL+`/storage/${artikel.author.foto}` : '../images/NO IMAGE AVAILABLE.jpg'} alt={`${artikel?.author?.name ?? 'Author'} avatar`} className="w-[70px] rounded" />
+                        <h3 className="font-bold mt-4 text-gray-800 dark:text-gray-300">{artikel?.author?.name}</h3>
+                        <p className="text-sm mt-2 text-gray-700 dark:text-gray-400">{artikel?.author?.deskripsi}</p>
                     </div>
                     )}
                 </div>

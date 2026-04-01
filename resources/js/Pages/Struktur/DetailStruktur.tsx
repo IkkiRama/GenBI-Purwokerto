@@ -109,7 +109,7 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
   if (loading) {
     // full-screen loader (kept accessible)
     return (
-      <MainLayout isDark={isDark} title={`Detail Struktur ${namaBidang} Periode ${periode}`}>
+      <MainLayout title={`Detail Struktur ${namaBidang} Periode ${periode}`}>
         <Head>
           <meta name="robots" content="noindex, nofollow" />
         </Head>

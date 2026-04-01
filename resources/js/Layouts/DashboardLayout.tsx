@@ -22,9 +22,14 @@ export default function DashboardLayout({
 
 
     if (loading) {
+        // full-screen loader (kept accessible)
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <span className="text-gray-500">Loading...</span>
+            <div className='flex justify-center items-center flex-col fixed z-[999] inset-0 bg-white dark:bg-gray-900 gap-3'>
+              <img src='https://res.cloudinary.com/dlzratsmb/image/upload/v1774996069/logo_dp3yt1.png' className="lg:w-1/4 w-[60%]" alt='logo' />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                <p className="text-gray-700 dark:text-gray-300">Sedang Memuat Data...</p>
+              </div>
             </div>
         );
     }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('content'); // Konten artikel
             $table->boolean('is_published')->default(false); // Status publikasi
             $table->timestamp('published_at')->nullable(); // Tanggal publikasi artikel (opsional)
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 

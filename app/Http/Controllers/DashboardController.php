@@ -17,9 +17,19 @@ class DashboardController extends Controller
         return Inertia::render('Dasboard/ArtikelDashboard', []);
     }
 
+    public function komentar()
+    {
+        return Inertia::render('Dasboard/Komentar', []);
+    }
+
     public function createArtikel()
     {
-        return Inertia::render('Dasboard/CreateArtikel', []);
+        return Inertia::render('Dasboard/CreateArtikelPage', []);
+    }
+
+    public function editArtikel(string $slug)
+    {
+        return Inertia::render('Dasboard/EditArtikelPage', ["slug" => $slug]);
     }
 
     public function accountSettings()

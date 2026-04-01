@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setTheme } from "@/Store/themeSlice";
 import { useSelector } from "react-redux";
 import { fetchUser } from "@/Store/authSlice";
+import { Toaster } from 'react-hot-toast';
 
 function AppWrapper({ children }) {
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ createInertiaApp({
                 <ThemeProvider>
                     <Provider store={store}>
                         <AppWrapper>
+                            <Toaster position="top-right" />
                             <ThemeSync />
                             <App {...props} />
                         </AppWrapper>

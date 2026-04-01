@@ -11,7 +11,7 @@ export const store = configureStore({
   },
 });
 
-// ✅ subscribe ke perubahan state
+// subscribe ke perubahan state
 store.subscribe(() => {
   const state = store.getState();
   const isDark = state.theme.isDark;
