@@ -139,39 +139,73 @@ const Navbar = () => {
       label: "Game Edukasi",
       icon: FaGamepad,
       children: [
-        {
-          label: "Game Makro",
-          icon: FaGamepad,
-          soon: true,
-          children: [
-            { label: "Respon Kebijakan", soon: true },
-            { label: "World Crisis Simulator", soon: true },
-            { label: "Macro Tycoon", soon: true },
-            { label: "Country Simulator", soon: true },
-            { label: "Sawitisasi Simulator", soon: true },
-            { label: "IS-LM Simulator", soon: true }
-          ]
-        },
-        {
-          label: "Game Metopen",
-          icon: FaSearch,
-          soon: true,
-          children: [
-            { label: "Metodolgy Suggestion", soon: true },
-            { label: "Moderasi atau Mediasi", soon: true },
-          ]
-        },
-        {
-          label: "Game Statistik",
-          icon: FaChartBar,
-          soon: true,
-          children: [
-            { label: "Z-Score Reader", soon: true },
-            { label: "T-Table Reader", soon: true },
-            { label: "Sample Kalkulator", soon: true }
-          ]
-        }
-      ]
+            {
+                label: "Game Makro",
+                icon: FaGamepad,
+                children: [
+                {
+                    label: "Respon Kebijakan",
+                    path: "/games/game-makro/respon-kebijakan-makro"
+                },
+                {
+                    label: "World Crisis Simulator",
+                    path: "/games/game-makro/world-crisis-simulator"
+                },
+                {
+                    label: "Macro Tycoon",
+                    path: "/games/game-makro/macro-tycoon"
+                },
+                {
+                    label: "Country Simulator",
+                    path: "/games/game-makro/country-simulator"
+                },
+                {
+                    label: "Sawitisasi Simulator",
+                    path: "/games/game-makro/sawitisasi-simulator"
+                },
+                {
+                    label: "IS-LM Simulator",
+                    path: "/games/game-makro/is-lm-simulator"
+                }
+                ]
+            },
+            {
+                label: "Game Metopen",
+                icon: FaSearch,
+                children: [
+                {
+                    label: "Metopen Game",
+                    path: "/games/game-metopen/metopen-game"
+                },
+                {
+                    label: "Methodology Suggestion",
+                    path: "/games/game-metopen/methodology-suggestion"
+                },
+                {
+                    label: "Moderasi atau Mediasi",
+                    path: "/games/game-metopen/moderasi-mediasi"
+                }
+                ]
+            },
+            {
+                label: "Game Statistik",
+                icon: FaChartBar,
+                children: [
+                {
+                    label: "Z-Score Reader",
+                    path: "/games/game-statistik/z-score-reader"
+                },
+                {
+                    label: "T-Table Reader",
+                    path: "/games/game-statistik/t-table-reader"
+                },
+                {
+                    label: "Sample Kalkulator",
+                    path: "/games/game-statistik/sample-kalkulator"
+                }
+                ]
+            }
+        ]
     }
   ];
 
@@ -317,7 +351,7 @@ const Navbar = () => {
                             >
                             <div className="w-min-[900px] bg-white rounded-2xl shadow-xl p-6 flex gap-6">
 
-                                {/* 🔥 HIGHLIGHT */}
+                                {/* HIGHLIGHT */}
                                 <div className="hidden md:flex w-[240px] bg-blue-600 text-white rounded-xl p-4 flex-col justify-between">
                                 <div>
                                     <h3 className="font-semibold text-lg">
@@ -388,13 +422,13 @@ const Navbar = () => {
                                         ?.children?.map((sub2) => (
                                             <div className="flex">
                                                 <Link
-                                                    href=""
+                                                    href={sub2?.path || "#"}
                                                     key={sub2.label}
                                                     className="text-sm hover:text-blue-600 text-slate-800"
                                                 >
                                                     {sub2.label}
                                                 </Link>
-                                                {/* 🔥 BADGE SOON */}
+                                                {/* BADGE SOON */}
                                                 {sub2.soon && (
                                                     <span className="ml-3 text-[10px] bg-yellow-300 px-2 py-[2px] rounded">
                                                     Soon

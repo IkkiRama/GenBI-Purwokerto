@@ -15,54 +15,170 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\GamesController;
 use Illuminate\Support\Facades\Route;
 
-// Public Routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index')->name('home');
+    Route::get('/genbi-point', 'genbiPoint')->name('genbi-point');
+});
+
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
-Route::get('/event', [EventController::class, 'index'])->name('event');
-Route::get('/event/{slug}', [EventController::class, 'show'])->name('detailEvent');
+/*
+|--------------------------------------------------------------------------
+| EVENT
+|--------------------------------------------------------------------------
+*/
+Route::prefix('event')->name('event.')->controller(EventController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{slug}', 'show')->name('detail');
+});
 
+/*
+|--------------------------------------------------------------------------
+| PROFIL & ORGANISASI
+|--------------------------------------------------------------------------
+*/
 Route::get('/tentang', [TentangController::class, 'index'])->name('tentang');
-Route::get('/organisasi', [OrganisasiController::class, 'index'])->name('organisasi');
 
-Route::get('/sejarah-kepengurusan', [OrganisasiController::class, 'sejarahKepengurusan'])->name('sejarah-kepengurusan');
-Route::get('/sejarah-kepengurusan/{periode}', [OrganisasiController::class, 'perKepengurusan'])->name('perperiode-sejarah-kepengurusan');
-Route::get('/organisasi/struktur/{periode}/{bidang}', [OrganisasiController::class, 'detailBidang'])->name('detailBidang');
+Route::prefix('organisasi')->name('organisasi.')->controller(OrganisasiController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
 
+    Route::get('/sejarah-kepengurusan', 'sejarahKepengurusan')->name('sejarah');
+    Route::get('/sejarah-kepengurusan/{periode}', 'perKepengurusan')->name('sejarah.periode');
+
+    Route::get('/struktur/{periode}/{bidang}', 'detailBidang')->name('struktur.detail');
+});
+
+/*
+|--------------------------------------------------------------------------
+| MEDIA
+|--------------------------------------------------------------------------
+*/
+Route::prefix('artikel')->name('artikel.')->controller(ArtikelController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/kategori/{slug}', 'showKategori')->name('kategori');
+    Route::get('/{slug}', 'show')->name('detail');
+});
+
+Route::prefix('podcast')->name('podcast.')->controller(PodcastController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{slug}', 'show')->name('detail');
+});
+
+Route::prefix('galeri')->name('galeri.')->controller(GaleriController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{slug}', 'show')->name('detail');
+});
+
+Route::prefix('newsletter')->name('newsletter.')->controller(NewsletterController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/{slug}', 'show')->name('detail');
+});
+
+/*
+|--------------------------------------------------------------------------
+| LAINNYA
+|--------------------------------------------------------------------------
+*/
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::get('/genbi-point', [HomeController::class, 'genbiPoint'])->name('genbi-point');
-
-Route::get('/artikel', [ArtikelController::class, 'index'])->name('artikel');
-Route::get('/artikel/{slug}', [ArtikelController::class, 'show'])->name('detail-artikel');
-Route::get('/artikel/kategori/{slug}', [ArtikelController::class, 'showKategori'])->name('detail-artikel');
-
-Route::get('/podcast', [PodcastController::class, 'index'])->name('podcast');
-Route::get('/podcast/{slug}', [PodcastController::class, 'show'])->name('detail-podcast');
-
-Route::get('/galeri', [GaleriController::class, 'index'])->name('galeri');
-Route::get('/galeri/{slug}', [GaleriController::class, 'show'])->name('detail-galeri');
-
-Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter');
-Route::get('/newsletter/{slug}', [NewsletterController::class, 'show'])->name('detail-newsletter');
-
 Route::get('/sejarah-developer', [DeveloperController::class, 'index'])->name('developer');
 
-Route::get('/kuis', [QuizController::class, 'index'])->name('kuis');
-Route::get('/kuis/mulai/{uuid}', [QuizController::class, 'start'])->name('kuis start');
+/*
+|--------------------------------------------------------------------------
+| KUIS
+|--------------------------------------------------------------------------
+*/
+Route::prefix('kuis')->name('kuis.')->controller(QuizController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/mulai/{uuid}', 'start')->name('start');
+});
 
+/*
+|--------------------------------------------------------------------------
+| SUBSCRIBE
+|--------------------------------------------------------------------------
+*/
 Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe.store');
 
-Route::get('/login', [AuthController::class, 'index'])->name('login');
-Route::get('/auth-success', [AuthController::class, 'authSuccess'])->name('auth-success');
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'index')->name('login');
+    Route::get('/auth-success', 'authSuccess')->name('auth.success');
+});
 
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD
+|--------------------------------------------------------------------------
+*/
+Route::prefix('dashboard')->name('dashboard.')->controller(DashboardController::class)->group(function () {
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/', 'dashboard')->name('index');
 
-Route::get('/dashboard/artikel', [DashboardController::class, 'artikel'])->name('dashboardArtikel');
-Route::get('/dashboard/artikel/buat', [DashboardController::class, 'createArtikel'])->name('CreateArtikel');
-Route::get('/dashboard/artikel/edit/{slug}', [DashboardController::class, 'editArtikel'])->name('EditArtikel');
-Route::get('/dashboard/artikel/komentar', [DashboardController::class, 'komentar'])->name('komentar');
+    // ARTIKEL
+    Route::prefix('artikel')->name('artikel.')->group(function () {
+        Route::get('/', 'artikel')->name('index');
+        Route::get('/buat', 'createArtikel')->name('create');
+        Route::get('/edit/{slug}', 'editArtikel')->name('edit');
+        Route::get('/komentar', 'komentar')->name('komentar');
+    });
 
-Route::get('/dashboard/settings', [DashboardController::class, 'accountSettings'])->name('accountSettings');
+    // SETTINGS
+    Route::get('/settings', 'accountSettings')->name('settings');
+});
+
+/*
+|--------------------------------------------------------------------------
+| GAMES
+|--------------------------------------------------------------------------
+*/
+Route::prefix('games')->controller(GamesController::class)->group(function () {
+
+    // GAME MAKRO
+    Route::prefix('game-makro')->group(function () {
+
+        Route::get('/respon-kebijakan-makro', 'ResponKebijakanMakro')->name('games.makro.respon');
+        Route::get('/world-crisis-simulator', 'WorldCrisisSimulator')->name('games.makro.world');
+        Route::get('/macro-tycoon', 'MacroTycoon')->name('games.makro.tycoon');
+        Route::get('/country-simulator', 'CountrySimulator')->name('games.makro.country');
+        Route::get('/sawitisasi-simulator', 'SawitisasiSimulator')->name('games.makro.sawit');
+        Route::get('/is-lm-simulator', 'IsLmSimulator')->name('games.makro.islm');
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | GAME METOPEN
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('game-metopen')->name('metopen.')->group(function () {
+        Route::get('/metopen-game', 'MetopenGame')->name('game');
+        Route::get('/methodology-suggestion', 'MethodologySuggestion')->name('methodology');
+        Route::get('/moderasi-mediasi', 'ModerasiMediasi')->name('moderasi');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | GAME STATISTIK
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('game-statistik')->name('statistik.')->group(function () {
+        Route::get('/z-score-reader', 'ZScoreReader')->name('zscore');
+        Route::get('/t-table-reader', 'TTableReader')->name('ttable');
+        Route::get('/sample-kalkulator', 'SampleKalkulator')->name('sample');
+    });
+
+});
