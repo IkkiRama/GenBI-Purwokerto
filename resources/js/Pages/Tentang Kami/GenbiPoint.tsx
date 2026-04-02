@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '@/Layouts/MainLayout';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '@/Hooks/useTheme';
 import HeroGenBIPoint from '@/Components/HeroGenBIPoint';
 import { IconCalendarDays, IconClipboard, IconListBullets, IconTrophy } from '@irsyadadl/paranoid';
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { Head } from '@inertiajs/react';
+import { useSelector } from "react-redux";
 
 /* =========================
    SHIMMER SKELETON COMPONENT
@@ -32,25 +32,16 @@ export default function GenBIPoint() {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
-  /* =========================
-     DARK MODE HANDLING
-  ========================= */
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
+    const isDark = useSelector((state) => state.theme.isDark);
 
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   /* =========================
      FETCH SOTM DATA
@@ -137,7 +128,7 @@ export default function GenBIPoint() {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.4 }}
     >
-      <MainLayout isDark={isDark} title="GenBI Point">
+      <MainLayout title="GenBI Point">
         {/* ========================= SEO ========================= */}
         <Head>
           <title>GenBI Point - GenBI Purwokerto</title>
@@ -149,20 +140,6 @@ export default function GenBIPoint() {
           <link rel="canonical" href={`${import.meta.env.VITE_APP_URL}/genbi-point`} />
           <meta name="theme-color" content={isDark ? '#111827' : '#ffffff'} />
         </Head>
-
-        {/* ========================= THEME TOGGLE ========================= */}
-        <div className="fixed right-5 bottom-24 z-50">
-          <button
-            aria-label="Toggle theme"
-            aria-pressed={isDark}
-            onClick={() => setIsDark((s) => !s)}
-            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2"
-          >
-            <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">
-              {isDark ? '🌞 Light' : '🌙 Dark'}
-            </span>
-          </button>
-        </div>
 
         <section className="bg-white dark:bg-gray-900 flex justify-center">
           <HeroGenBIPoint />

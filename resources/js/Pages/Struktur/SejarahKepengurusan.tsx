@@ -1,9 +1,9 @@
 // pages/SejarahKepengurusan.enhanced.tsx
 import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '@/Layouts/MainLayout';
-import { useTheme } from '@/Hooks/useTheme';
 import { Head, Link } from '@inertiajs/react';
+import { useSelector } from "react-redux";
 
 const PAGE_VARIANTS = {
   initial: { opacity: 0, y: 12 },
@@ -30,23 +30,16 @@ export default function SejarahKepengurusan() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'semua' | 'terbaru'>('semua');
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
+    const isDark = useSelector((state) => state.theme.isDark);
 
-  // Respect prefers-reduced-motion
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   useEffect(() => {
     let mounted = true;
@@ -98,7 +91,7 @@ export default function SejarahKepengurusan() {
   );
 
   return (
-    <MainLayout isDark={isDark} title="Sejarah Kepengurusan">
+    <MainLayout title="Sejarah Kepengurusan">
       <Head>
         <title>Sejarah Kepengurusan - GenBI Purwokerto</title>
         <meta name="description" content="Pelajari sejarah kepengurusan GenBI Purwokerto: daftar periode kepengurusan & alumni pengurus dari tahun ke tahun." />
@@ -108,18 +101,6 @@ export default function SejarahKepengurusan() {
         <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
         <meta property="og:type" content="website" />
       </Head>
-
-      {/* Theme toggle */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark(s => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-        </button>
-      </div>
 
       <motion.main
         variants={PAGE_VARIANTS}

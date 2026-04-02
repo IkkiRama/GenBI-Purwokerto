@@ -9,8 +9,8 @@ import { Head, Link } from "@inertiajs/react";
 
 import ShareButton from "@/Components/ShareButton";
 import { getRandomColor } from "@/Utils/getRandomColor";
-import { useTheme } from "@/Hooks/useTheme";
 import { Lock, LogIn } from "lucide-react";
+import { useSelector } from "react-redux";
 
 interface DetailArtikelProps {
   slug: string;
@@ -21,6 +21,7 @@ interface ArtikelType {
   title: string;
   slug?: string;
   content: string;
+  excerpt: string;
   keyword?: string;
   thumbnail?: string | null;
   updated_at?: string;
@@ -60,16 +61,16 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   const [warnaProfile] = useState(getRandomColor());
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+    const isDark = useSelector((state) => state.theme.isDark);
 
-
-  const themeHook = useTheme();
-  const prefersDark = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return prefersDark;
-  });
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   // Tabs: 'terbaru' | 'rekomendasi' (animated)
   const [activeTab, setActiveTab] = useState<'terbaru' | 'rekomendasi'>('terbaru');
@@ -80,15 +81,6 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   : null;
 
   const isLoggedIn = !!token;
-
-  // Sync theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
 
   // Defensive fetch helpers
   const fetchData = async () => {
@@ -201,28 +193,16 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
     <MainLayout title={artikel?.title ?? "Detail Artikel"}>
 
       <Head>
-        {/* <meta name="description" content={artikel?.excerpt ?? 'Artikel GenBI Purwokerto'} /> */}
+        <meta name="description" content={artikel?.excerpt ?? 'Artikel GenBI Purwokerto'} />
         <meta name="keywords" content={artikel?.keyword ?? ''} />
         <meta property="og:title" content={artikel?.title ?? 'Detail Artikel - GenBI Purwokerto'} />
-        {/* <meta property="og:description" content={artikel?.excerpt ?? ''} /> */}
+        <meta property="og:description" content={artikel?.excerpt ?? ''} />
         <meta property="og:image" content={artikel?.thumbnail ? BASE_URL+`/storage/${artikel.thumbnail}` : '../images/NO IMAGE AVAILABLE.jpg'} />
         <meta property="og:url" content={`${import.meta.env.VITE_APP_URL}/${slug}`} />
       </Head>
 
       {/* Page transition wrapper */}
       <motion.div initial="initial" animate="enter" exit="exit" variants={pageVariants}>
-
-        {/* Theme toggle */}
-        <div className="fixed right-5 bottom-24 z-50">
-          <button
-            aria-label="Toggle theme"
-            aria-pressed={isDark}
-            onClick={() => setIsDark(s => !s)}
-            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-          </button>
-        </div>
 
         <main className="container mx-auto pb-20">
 

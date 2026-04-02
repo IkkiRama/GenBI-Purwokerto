@@ -2,9 +2,9 @@ import MainLayout from '@/Layouts/MainLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Head } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Developer = () => {
-    const [isDark, setIsDark] = useState(false);
     const [developers, setDevelopers] = useState<any>({});
     const [selectedDev, setSelectedDev] = useState<any>(null);
     const [activePeriode, setActivePeriode] = useState<string | null>(null);
@@ -14,24 +14,16 @@ const Developer = () => {
 
     const sectionRefs = useRef<any>({});
 
-    // THEME
-    useEffect(() => {
-        const stored = localStorage.getItem('theme');
-        const dark = stored === 'dark';
-        setIsDark(dark);
-        if (dark) document.documentElement.classList.add('dark');
-    }, []);
+    const isDark = useSelector((state) => state.theme.isDark);
 
-    const toggleTheme = () => {
-        setIsDark(!isDark);
-        if (!isDark) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
         } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove("dark");
         }
-    };
+        }, [isDark]);
 
     // GROUPING
     const groupByPeriode = (data: any[]) => {
@@ -87,20 +79,8 @@ const Developer = () => {
     };
 
     return (
-        <MainLayout isDark={isDark} title="Developer">
+        <MainLayout title="Developer">
             <Head title="Developer GenBI" />
-
-            {/* TOGGLE */}
-            <div className="fixed right-5 bottom-24 z-50">
-                <button
-                    aria-label="Toggle theme"
-                    aria-pressed={isDark}
-                    onClick={() => setIsDark(s => !s)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-                </button>
-            </div>
 
             <main className="container mx-auto lg:pt-28 lg:pb-20 py-20 px-6">
 

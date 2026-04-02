@@ -111,7 +111,7 @@ const HalamanKerjakanKuis = ({ uuid }: { uuid: string }) => {
 
   const currentQuestion = quiz.questions[currentIndex];
 
-  // ✅ HANDLE ANSWER
+  // HANDLE ANSWER
   const handleAnswer = (questionId: number, answerId: number) => {
     setAnswers((prev) => ({
       ...prev,
@@ -119,7 +119,7 @@ const HalamanKerjakanKuis = ({ uuid }: { uuid: string }) => {
     }));
   };
 
-  // ✅ SUBMIT
+  // SUBMIT
   const handleSubmit = async (auto = false) => {
     const unanswered = quiz.questions.length - Object.keys(answers).length;
 

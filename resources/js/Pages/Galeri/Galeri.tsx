@@ -1,10 +1,10 @@
 import MainLayout from '@/Layouts/MainLayout';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useTheme } from '@/Hooks/useTheme';
 import { useEffect, useMemo, useState } from 'react';
 import { FaCalendar, FaMapMarkedAlt } from 'react-icons/fa';
 import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';
+import { useSelector } from 'react-redux';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
@@ -49,14 +49,16 @@ const Galeri = () => {
   const [filter, setFilter] = useState('all');
 
   const reduceMotion = useReducedMotion();
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(themeHook?.isDark ?? false);
+  const isDark = useSelector((state) => state.theme.isDark);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   /* ================= FETCH ================= */
   useEffect(() => {
@@ -90,7 +92,7 @@ const Galeri = () => {
   }, [filter, galeri]);
 
   return (
-    <MainLayout isDark={isDark} title="Galeri">
+    <MainLayout title="Galeri">
       <Head>
         <title>Galeri - GenBI Purwokerto</title>
         <meta
@@ -107,18 +109,6 @@ const Galeri = () => {
 
       <AnimatePresence mode="wait">
         <motion.div {...(!reduceMotion ? pageTransition : {})}>
-
-          {/* THEME TOGGLE */}
-          <div className="fixed right-5 bottom-24 z-50">
-            <button
-                aria-label="Toggle theme"
-                aria-pressed={isDark}
-                onClick={() => setIsDark(s => !s)}
-                className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-                <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-            </button>
-          </div>
 
           {/* HEADER */}
           <div className="pt-28 pb-8 text-center">

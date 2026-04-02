@@ -1,17 +1,25 @@
 import { useState } from "react";
 
-export default function useSimulation(ideal) {
+export default function useSimulation() {
   const [values, setValues] = useState({
-    interest: 20,
-    tax: 38,
-    spending: 40,
+    interest: 10,
+    tax: 20,
+    spending: 30,
   });
 
-  const updateValue = (key, val) => {
-    setValues(prev => ({ ...prev, [key]: val }));
+  const reset = (ideal) => {
+    setValues({
+      interest: ideal.interest - 10,
+      tax: ideal.tax - 10,
+      spending: ideal.spending - 10,
+    });
   };
 
-  const calculateScore = () => {
+  const updateValue = (key, val) => {
+    setValues((prev) => ({ ...prev, [key]: val }));
+  };
+
+  const calculateScore = (ideal) => {
     let diff =
       Math.abs(values.interest - ideal.interest) +
       Math.abs(values.tax - ideal.tax) +
@@ -20,5 +28,5 @@ export default function useSimulation(ideal) {
     return Math.max(0, 100 - diff);
   };
 
-  return { values, updateValue, calculateScore };
+  return { values, updateValue, calculateScore, reset };
 }

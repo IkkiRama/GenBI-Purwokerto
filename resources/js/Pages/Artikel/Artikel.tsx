@@ -10,30 +10,22 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { changeDate } from '@/Utils/changeDate';
 import { getRandomColor } from '@/Utils/getRandomColor';
-import { useTheme } from '@/Hooks/useTheme';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MdCategory } from 'react-icons/md';
+import { useSelector } from "react-redux";
 
 export default function Artikel() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+    const isDark = useSelector((state) => state.theme.isDark);
 
-  // theme
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = localStorage.getItem('theme');
-    if (stored) return stored === 'dark';
-    return document.documentElement.classList.contains('dark');
-  });
-
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   // article states
   const [artikelPalingBaru, setArtikelPalingBaru] = useState([]);
@@ -345,7 +337,7 @@ export default function Artikel() {
   };
 
   return (
-    <MainLayout title="Artikel" isDark={isDark}>
+    <MainLayout title="Artikel">
       <Head>
         <title>Artikel GenBI Purwokerto - Generasi Baru Indonesia</title>
         <meta name="description" content="Temukan artikel inspiratif GenBI Purwokerto tentang pendidikan, sosial, ekonomi, dan kegiatan komunitas." />
@@ -358,18 +350,6 @@ export default function Artikel() {
 
       {/* Skip link */}
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-3 py-2 rounded">Skip to content</a>
-
-      {/* Theme toggle */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark(s => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-        </button>
-      </div>
 
       <motion.main
         id="main"

@@ -2,6 +2,7 @@ import MainLayout from '@/Layouts/MainLayout';
 import { Head, Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSelector } from "react-redux";
 
 const DetailKategoriArtikel = ({ slug }: { slug: string }) => {
     const [kategori, setKategori] = useState<any>(null);
@@ -10,13 +11,16 @@ const DetailKategoriArtikel = ({ slug }: { slug: string }) => {
 
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    const [isDark, setIsDark] = useState(false);
     const MotionLink = motion(Link);
+    const isDark = useSelector((state) => state.theme.isDark);
 
-    // THEME
+    // Sync theme
     useEffect(() => {
-        if (isDark) document.documentElement.classList.add('dark');
-        else document.documentElement.classList.remove('dark');
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
     }, [isDark]);
 
     // FETCH DATA
@@ -46,23 +50,11 @@ const DetailKategoriArtikel = ({ slug }: { slug: string }) => {
     }, [slug]);
 
     return (
-        <MainLayout isDark={isDark} title={kategori?.nama}>
+        <MainLayout title={kategori?.nama}>
             <Head>
                 <title>{kategori?.nama || 'Kategori'}</title>
                 <meta name="description" content={kategori?.deskripsi || ''} />
             </Head>
-
-            {/* THEME TOGGLE */}
-            <div className="fixed right-5 bottom-24 z-50">
-                <button
-                    aria-label="Toggle theme"
-                    aria-pressed={isDark}
-                    onClick={() => setIsDark(s => !s)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-                </button>
-            </div>
 
             <main className="container mx-auto pt-28 pb-16 px-4">
 

@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { FaCalendar, FaMapMarkedAlt } from 'react-icons/fa';
 import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';
-import { useTheme } from '@/Hooks/useTheme';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSelector } from 'react-redux';
 
 interface DetailEventProps {
   slug: string;
@@ -50,20 +50,16 @@ const DetailEvent: React.FC<DetailEventProps> = ({ slug }) => {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = localStorage.getItem('theme');
-    return stored ? stored === 'dark' : false;
-  });
+  const isDark = useSelector((state) => state.theme.isDark);
 
-  // ===== SYNC DARK MODE =====
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   // ===== FETCH DATA =====
   const fetchData = async () => {
@@ -109,7 +105,7 @@ const DetailEvent: React.FC<DetailEventProps> = ({ slug }) => {
   if (error) return <p role="alert">Error: {error}</p>;
 
   return (
-    <MainLayout isDark={isDark} title={event?.nama ?? 'Detail Event'}>
+    <MainLayout title={event?.nama ?? 'Detail Event'}>
       <Head>
         <title>{event?.nama}</title>
         <meta name="description" content={event?.excerpt} />
@@ -135,18 +131,6 @@ const DetailEvent: React.FC<DetailEventProps> = ({ slug }) => {
                 </div>
             </div>
         )}
-
-      {/* THEME TOGGLE */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-            aria-label="Toggle theme"
-            aria-pressed={isDark}
-            onClick={() => setIsDark(s => !s)}
-            className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-          </button>
-      </div>
 
       {/* PAGE TRANSITION */}
       <motion.div initial="initial" animate="enter" exit="exit" variants={pageVariants}>

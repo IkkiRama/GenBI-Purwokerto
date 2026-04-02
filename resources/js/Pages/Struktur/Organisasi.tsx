@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '@/Layouts/MainLayout';
-import { useTheme } from '@/Hooks/useTheme';
 import { Head } from '@inertiajs/react';
 import ProfileCard from '@/Components/ProfileCard';
+import { useSelector } from 'react-redux';
 
 // ================= TYPES =================
 interface University {
@@ -53,22 +53,17 @@ const Organization: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'president' | 'secretary' | 'treasure' | 'deputy'>('president');
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
+    const isDark = useSelector((state) => state.theme.isDark);
 
-  // Sync theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
+
 
   // Fetch Data
   useEffect(() => {
@@ -102,7 +97,7 @@ const Organization: React.FC = () => {
         animate="enter"
         exit="exit"
       >
-        <MainLayout isDark={isDark} title="Organisasi">
+        <MainLayout title="Organisasi">
           <Head>
             <title>Organisasi GenBI Purwokerto</title>
             <meta
@@ -114,20 +109,6 @@ const Organization: React.FC = () => {
             <meta property="og:description" content="Struktur lengkap organisasi GenBI Purwokerto." />
             <meta property="og:type" content="website" />
           </Head>
-
-          {/* Theme Toggle */}
-          <div className="fixed right-5 bottom-24 z-50">
-            <button
-              aria-label="Toggle theme"
-              aria-pressed={isDark}
-              onClick={() => setIsDark((s) => !s)}
-              className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">
-                {isDark ? '🌞 Light' : '🌙 Dark'}
-              </span>
-            </button>
-          </div>
 
           <div className={isDark ? 'bg-gray-900 min-h-screen' : 'bg-gray-50 min-h-screen'}>
             <div className="container mx-auto px-4 pb-20 pt-20 lg:pt-32">

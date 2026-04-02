@@ -1,32 +1,26 @@
 import MainLayout from '@/Layouts/MainLayout';
 import { motion } from 'framer-motion';
-import { useTheme } from '@/Hooks/useTheme';
 import { Head } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
+import { useSelector } from "react-redux";
+import { useEffect } from 'react';
 
 const Login = () => {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL_LOGIN || 'http://localhost:8000';
 
+  const isDark = useSelector((state) => state.theme.isDark);
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
-
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
+      // Sync theme
+      useEffect(() => {
+          if (isDark) {
+              document.documentElement.classList.add("dark");
+          } else {
+              document.documentElement.classList.remove("dark");
+          }
+      }, [isDark]);
 
   return (
-    <MainLayout isDark={isDark} title="Masuk">
+    <MainLayout title="Masuk">
       <Head>
         <title>Masuk - GenBI</title>
         <meta
@@ -34,20 +28,6 @@ const Login = () => {
           content="Masuk ke platform GenBI untuk mengakses fitur dan konten eksklusif."
         />
       </Head>
-
-      {/* Theme toggle */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark((s) => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">
-            {isDark ? '🌞 Light' : '🌙 Dark'}
-          </span>
-        </button>
-      </div>
 
       <main className="container mx-auto py-20 px-4 flex items-center justify-center min-h-screen">
         <motion.div

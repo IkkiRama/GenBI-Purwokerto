@@ -2,33 +2,25 @@ import MainLayout from '@/Layouts/MainLayout';
 import { motion } from 'framer-motion';
 import { Head } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Kuis = () => {
-    const [isDark, setIsDark] = useState(false);
     const [quizzes, setQuizzes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
 
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    // THEME
-    useEffect(() => {
-        const stored = localStorage.getItem('theme');
-        const dark = stored === 'dark';
-        setIsDark(dark);
-        if (dark) document.documentElement.classList.add('dark');
-    }, []);
+    const isDark = useSelector((state) => state.theme.isDark);
 
-    const toggleTheme = () => {
-        setIsDark(!isDark);
-        if (!isDark) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
         } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.classList.remove("dark");
         }
-    };
+    }, [isDark]);
 
     // FETCH QUIZ
     useEffect(() => {
@@ -47,10 +39,10 @@ const Kuis = () => {
                 credentials: 'include'
             });
 
-            // if (res.status === 401) {
-            //     window.location.href = '/masuk';
-            //     return;
-            // }
+            if (res.status === 401) {
+                window.location.href = '/masuk';
+                return;
+            }
 
             const data = await res.json();
 
@@ -78,20 +70,8 @@ const Kuis = () => {
     }, []);
 
     return (
-        <MainLayout isDark={isDark} title="Kuis Nusantara">
+        <MainLayout title="Kuis Nusantara">
             <Head title="Kuis Nusantara" />
-
-            {/* TOGGLE */}
-            <div className="fixed right-5 bottom-24 z-50">
-                <button
-                    aria-label="Toggle theme"
-                    aria-pressed={isDark}
-                    onClick={() => setIsDark(s => !s)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-                </button>
-            </div>
 
             <main className="container mx-auto lg:pt-28 lg:pb-20 py-20 px-6">
 

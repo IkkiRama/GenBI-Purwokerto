@@ -16,7 +16,7 @@ export default function MainLayout({ children, title = 'Home', isDashboard = fal
 
     const isDark = useSelector((state: any) => state.theme.isDark);
     const dispatch = useDispatch();
-
+ 
     return (
         <div className={isDark ? 'dark' : ''}>
             <Head title={title} >

@@ -2,9 +2,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '@/Layouts/MainLayout';
-import { useTheme } from '@/Hooks/useTheme';
 import ProfileCard from '@/Components/ProfileCard';
 import { Head } from '@inertiajs/react';
+import { useSelector } from 'react-redux';
 
 interface Props { periode: string }
 
@@ -54,13 +54,16 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
 
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
+    const isDark = useSelector((state) => state.theme.isDark);
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
     useEffect(() => {
         const fetchSotm = async () => {
@@ -78,14 +81,6 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
     }, [periode]);
 
     const sortedSotm = [...sotm].sort((a, b) => a.jenis.localeCompare(b.jenis));
-
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
 
   useEffect(() => {
     const fetchStruktur = async () => {
@@ -111,7 +106,7 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
   }, [activeTab, struktur]);
 
   return (
-    <MainLayout isDark={isDark} title={`Struktur GenBI ${periode}`}>
+    <MainLayout title={`Struktur GenBI ${periode}`}>
       <Head>
         <meta name="description" content={`Struktur lengkap kepengurusan GenBI Purwokerto periode ${periode}.`} />
         <meta name="keywords" content="struktur genbi, sejarah genbi, genbi purwokerto" />
@@ -120,18 +115,6 @@ const SejarahPerKepengurusan: React.FC<Props> = ({ periode }) => {
         <meta property="og:image" content={`${import.meta.env.VITE_APP_URL}/images/logo.png`} />
         <meta property="og:type" content="website" />
       </Head>
-
-      {/* THEME TOGGLE */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark((s) => !s)}
-          className="px-4 py-2 rounded-full border bg-white/80 dark:bg-gray-800/80 backdrop-blur"
-        >
-          <span className="dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-        </button>
-      </div>
 
       {/* PAGE TRANSITION */}
       <AnimatePresence mode="wait">

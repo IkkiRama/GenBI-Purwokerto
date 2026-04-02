@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import MainLayout from '@/Layouts/MainLayout';
 import NotFound from "@/Components/NotFound";
 import { Head } from "@inertiajs/react";
-import { useTheme } from "@/Hooks/useTheme";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useSelector } from "react-redux";
 
 interface DetailStrukturProps {
   periode: string;
@@ -27,13 +27,16 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const themeHook = useTheme();
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (themeHook?.isDark !== undefined) return themeHook.isDark;
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
-    if (stored) return stored === 'dark';
-    return typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
-  });
+    const isDark = useSelector((state) => state.theme.isDark);
+
+    // Sync theme
+    useEffect(() => {
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    }, [isDark]);
 
   // reduced motion
   const shouldReduceMotion = useReducedMotion();
@@ -131,7 +134,7 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
   }
 
   return (
-    <MainLayout isDark={isDark} title={`Detail Struktur ${namaBidang} Periode ${periode}`}>
+    <MainLayout title={`Detail Struktur ${namaBidang} Periode ${periode}`}>
       <Head>
         <title>{`Detail Struktur ${namaBidang} — GenBI Purwokerto`}</title>
         <meta name="description" content={`Detail struktur ${namaBidang} GenBI Purwokerto periode ${periode}. Lihat daftar anggota, jabatan, dan departemen.`} />
@@ -140,18 +143,6 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
         <meta property="og:description" content={struktur?.quote ?? `Struktur ${namaBidang} periode ${periode}`} />
         <meta property="og:image" content={struktur?.foto ? `${BASE_URL}/storage/${struktur.foto}` : `${import.meta.env.VITE_APP_URL}/images/logo.png`} />
       </Head>
-
-      {/* Theme toggle */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark(s => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-        </button>
-      </div>
 
       {/* Page */}
       <motion.main
