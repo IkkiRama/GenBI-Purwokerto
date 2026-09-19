@@ -6,7 +6,7 @@ import { changeDate } from '@/Utils/changeDate';
 import { Head, Link } from '@inertiajs/react';
 import { useSelector } from 'react-redux';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 /* ================= ANIMATION ================= */
 const pageTransition = {

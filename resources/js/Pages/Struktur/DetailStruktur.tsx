@@ -20,7 +20,7 @@ interface Member {
 
 //@ts-ignore
 const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [struktur, setStruktur] = useState<any | null>(null);
   const [members, setMembers] = useState<Member[]>([]);

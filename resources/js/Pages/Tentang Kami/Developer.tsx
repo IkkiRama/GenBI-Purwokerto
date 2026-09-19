@@ -44,8 +44,7 @@ const Developer = () => {
   const [error, setError] = useState<string | null>(null);
 
   const BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    'https://genbi-data.test';
+    import.meta.env.VITE_API_BASE_URL;
 
   const sectionRefs =
     useRef<Record<string, HTMLDivElement | null>>({});

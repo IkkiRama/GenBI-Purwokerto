@@ -15,6 +15,8 @@ const Contact = () => {
     const [judul, setJudul] = useState("");
     const [pesan, setPesan] = useState("");
 
+    const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
     const isDark = useSelector((state) => state.theme.isDark);
 
     // Sync theme
@@ -36,7 +38,7 @@ const Contact = () => {
 
 
         try {
-            const response = await fetch('https://genbi-data.test/api/kontak', {
+            const response = await fetch(BASE_URL + '/api/kontak', {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

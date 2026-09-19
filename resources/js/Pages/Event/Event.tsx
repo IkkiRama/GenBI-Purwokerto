@@ -45,7 +45,7 @@ export default function Event() {
         }
     }, [isDark]);
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);

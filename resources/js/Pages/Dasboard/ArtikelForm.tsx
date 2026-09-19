@@ -11,7 +11,7 @@ export default function ArtikelForm({ artikel = null }) {
   const isDark = useSelector((state) => state.theme.isDark);
 
   const BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "https://genbi-data.test";
+    import.meta.env.VITE_API_BASE_URL;
 
   const isEdit = !!artikel;
 

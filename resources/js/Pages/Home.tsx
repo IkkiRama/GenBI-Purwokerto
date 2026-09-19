@@ -76,7 +76,7 @@ export default function Home() {
   const [eventData, setEventData] = useState<any[]>([]);
   const [artikelPalingBaru, setArtikelPalingBaru] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL as string || 'https://genbi-data.test';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL as string;
 
   const reducedMotion = usePrefersReducedMotion();
 

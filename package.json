@@ -1,14 +1,10 @@
 {
     "private": true,
     "type": "module",
-    "scripts": {
+     "scripts": {
         "build": "vite build",
-        "dev": "vite"
-    },
-    "compilerOptions": {
-        "strict": false,
-        "skipLibCheck": true,
-        "noImplicitAny": false
+        "dev": "vite",
+        "type-check": "tsc --noEmit"
     },
     "devDependencies": {
         "@headlessui/react": "^2.0.0",

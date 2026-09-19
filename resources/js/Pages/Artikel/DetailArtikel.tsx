@@ -60,7 +60,7 @@ const DetailArtikel: React.FC<DetailArtikelProps> = ({ slug }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [warnaProfile] = useState(getRandomColor());
 
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const isDark = useSelector((state) => state.theme.isDark);
 
     // Sync theme

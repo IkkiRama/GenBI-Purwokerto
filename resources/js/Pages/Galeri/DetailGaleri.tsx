@@ -8,7 +8,7 @@ import "yet-another-react-lightbox/styles.css";
 import { Head } from "@inertiajs/react";
 import { useSelector } from "react-redux";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 interface DetailGaleriProps {
   slug: string;
 }

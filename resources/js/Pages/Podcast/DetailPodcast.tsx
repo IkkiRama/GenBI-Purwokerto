@@ -60,8 +60,7 @@ const DetailPodcast = ({ slug }: DetailPodcastProps) => {
   const isMiniRef = useRef(false);
 
   const BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    'https://genbi-data.test';
+    import.meta.env.VITE_API_BASE_URL;
 
   // Sinkronisasi dark mode.
   useEffect(() => {

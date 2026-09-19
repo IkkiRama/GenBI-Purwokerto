@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useEffect } from 'react';
 
 const Login = () => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL_LOGIN || 'http://localhost:8000';
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL_LOGIN;
 
   const isDark = useSelector((state) => state.theme.isDark);
 
