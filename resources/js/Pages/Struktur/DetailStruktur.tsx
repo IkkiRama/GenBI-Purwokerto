@@ -29,15 +29,6 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
 
     const isDark = useSelector((state) => state.theme.isDark);
 
-    // Sync theme
-    useEffect(() => {
-        if (isDark) {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    }, [isDark]);
-
   // reduced motion
   const shouldReduceMotion = useReducedMotion();
 
