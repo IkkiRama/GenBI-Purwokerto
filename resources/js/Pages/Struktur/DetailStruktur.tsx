@@ -41,14 +41,6 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
   // reduced motion
   const shouldReduceMotion = useReducedMotion();
 
-  // Sync theme
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
-    try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch {}
-    //@ts-ignore
-    themeHook?.setTheme?.(isDark ? 'dark' : 'light');
-  }, [isDark]);
-
   useEffect(() => {
     let mounted = true;
     const fetchData = async () => {

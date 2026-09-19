@@ -76,6 +76,7 @@ const Footer = () => (
             <li><Link href="/tentang">Tentang GenBI</Link></li>
             <li><Link href="/organisasi">Organisasi</Link></li>
             <li><Link href="/sejarah-kepengurusan">Sejarah</Link></li>
+            <li><Link href="/genbi-point">GenBI Point</Link></li>
 
             <li className="flex items-center gap-2 opacity-60">
                 Program Kerja <span className="text-[10px] bg-yellow-300 text-black px-2 rounded">Soon</span>

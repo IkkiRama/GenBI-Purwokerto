@@ -51,11 +51,13 @@ Route::get('/tentang', [TentangController::class, 'index'])->name('tentang');
 
 Route::prefix('organisasi')->name('organisasi.')->controller(OrganisasiController::class)->group(function () {
     Route::get('/', 'index')->name('index');
-
-    Route::get('/sejarah-kepengurusan', 'sejarahKepengurusan')->name('sejarah');
-    Route::get('/sejarah-kepengurusan/{periode}', 'perKepengurusan')->name('sejarah.periode');
-
     Route::get('/struktur/{periode}/{bidang}', 'detailBidang')->name('struktur.detail');
+});
+
+
+Route::prefix('sejarah-kepengurusan')->name('sejarah.')->controller(OrganisasiController::class)->group(function () {
+    Route::get('/', 'sejarahKepengurusan')->name('sejarah');
+    Route::get('/{periode}', 'perKepengurusan')->name('sejarah.periode');
 });
 
 /*

@@ -15,6 +15,7 @@ import {
   MdKeyboardDoubleArrowUp,
 } from "react-icons/md";
 import { changeDate } from '@/Utils/changeDate';
+import { useSelector } from 'react-redux';
 
 // Lazy load larger components (improves initial bundle)
 const Hero = lazy(() => import('@/Components/Hero'));
@@ -63,20 +64,8 @@ const apiFetch = async (url: string, signal?: AbortSignal) => {
 };
 
 export default function Home() {
-    // use existing project hook if available
-  const themeHook = useTheme() as any; // keep flexible shape
-  // determine initial theme: prefer hook, then localStorage, then document
-  const initialFromHook = themeHook && typeof themeHook.isDark !== 'undefined' ? themeHook.isDark : undefined;
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof initialFromHook !== 'undefined') return initialFromHook;
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('theme');
-      if (stored) return stored === 'dark';
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
-
+    //   Theme hook
+    const isDark = useSelector((state) => state.theme.isDark);
 
   // Tab states
   const [tabActive, setTabActive] = useState<'news' | 'event'>('news');
@@ -99,15 +88,6 @@ export default function Home() {
       main?.focus();
     });
   }, []);
-
-  // sync theme
-  useEffect(() => {
-    if (isDark) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    if (themeHook && typeof themeHook.setTheme === 'function') themeHook.setTheme(isDark ? 'dark' : 'light');
-  }, [isDark]);
 
   // Fetch with abort controller and small validations
   useEffect(() => {
@@ -329,8 +309,8 @@ export default function Home() {
                 ) : eventData.map((item, index) => (
                   <Link key={index} href={`/event/${item.slug}`} className="bg-white rounded-lg shadow-sm mb-5 md:mb-0 hover:shadow-lg transition-shadow" aria-label={`Buka event ${item.nama}`}>
                     <img src={item.image ? BASE_URL+`/storage/${item.image}` : '/images/NO IMAGE AVAILABLE.jpg'} alt={item.nama} loading="lazy" className="w-full h-[200px] md:h-[270px] object-cover rounded-lg mb-8" />
-                    <h2 className={`px-4 text-lg font-bold mb-2`}>{item.nama}</h2>
-                    <p className="px-4 text-gray-700 dark:text-gray-300 lg:text-base md:text-sm text-[12px] line-clamp-3">{item.excerpt}</p>
+                    <h2 className={`px-4 text-gray-700 text-lg font-bold mb-2`}>{item.nama}</h2>
+                    <p className="px-4 text-gray-700 lg:text-base md:text-sm text-[12px] line-clamp-3">{item.excerpt}</p>
                     <div className="mt-5 md:flex gap-10 px-4 pb-4">
                       <p className="flex md:mb-0 mb-2 md:text-base text-[12px] gap-2 text-sm text-gray-600 items-center"><FaMapMarkedAlt /><span>{item.tempat}</span></p>
                       <p className="flex gap-2 text-sm text-gray-600 items-center"><FaCalendar /><span>{changeDate(new Date(item.tanggal))}</span></p>

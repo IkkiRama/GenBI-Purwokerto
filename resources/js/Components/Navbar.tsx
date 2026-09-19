@@ -27,7 +27,8 @@ import {
   FaBookOpen,
   FaLaptopCode,
   FaSearch,
-  FaCalendarAlt
+  FaCalendarAlt,
+  FaStar
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IconHamburger } from "@irsyadadl/paranoid";
@@ -95,9 +96,7 @@ const Navbar = () => {
         { label: "Tentang GenBI", path: "/tentang", icon: FaInfoCircle },
         { label: "Organisasi", path: "/organisasi", icon: FaBuilding },
         { label: "Sejarah", path: "/sejarah-kepengurusan", icon: FaHistory },
-        { label: "Program Kerja", soon: true, icon: FaBullhorn },
-        { label: "Pengumuman", soon: true, icon: FaBullhorn },
-        { label: "Kontak", path: "/contact", icon: FaPhone },
+        { label: 'GenBI Point', path: '/genbi-point', icon: FaStar },
         {
           label: "Beasiswa BI",
           icon: FaGraduationCap,
@@ -108,9 +107,12 @@ const Navbar = () => {
             { label: "Cara Daftar", soon: true }
           ]
         },
+        { label: "Program Kerja", soon: true, icon: FaBullhorn },
+        { label: "Pengumuman", soon: true, icon: FaBullhorn },
         { label: "FAQ", soon: true, path: "#", icon: FaQuestionCircle },
         { label: "Testimoni", soon: true, path: "#", icon: FaUsers },
         { label: "Statistik", soon: true, path: "#", icon: FaChartBar },
+        { label: "Kontak", path: "/contact", icon: FaPhone },
         { label: "Tim Pengembang", path: "/sejarah-developer", icon: FaLaptopCode }
       ]
     },

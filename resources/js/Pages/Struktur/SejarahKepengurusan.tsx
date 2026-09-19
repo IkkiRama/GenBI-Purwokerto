@@ -1,6 +1,6 @@
 // pages/SejarahKepengurusan.enhanced.tsx
 import { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import MainLayout from '@/Layouts/MainLayout';
 import { Head, Link } from '@inertiajs/react';
 import { useSelector } from "react-redux";
@@ -24,6 +24,9 @@ const TABS = [
 
 export default function SejarahKepengurusan() {
   const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://genbi-data.test';
+
+  const shouldReduceMotion = useReducedMotion();
+
 
   const [sejarahKepengurusan, setSejarahKepengurusan] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -165,12 +168,12 @@ export default function SejarahKepengurusan() {
                     ) : (
                       listToRender.map((item) => (
                         <motion.article
-                          key={item.periode}
-                          variants={reduce ? {} : ITEM_VARIANTS}
-                          initial="hidden"
-                          animate="visible"
-                          exit="exit"
-                          className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 overflow-hidden"
+                            key={item.id ?? item.periode}
+                            variants={shouldReduceMotion ? undefined : ITEM_VARIANTS}
+                            initial={shouldReduceMotion ? false : 'hidden'}
+                            animate={shouldReduceMotion ? undefined : 'visible'}
+                            exit={shouldReduceMotion ? undefined : 'exit'}
+                            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 overflow-hidden"
                         >
                           <Link href={`/sejarah-kepengurusan/${item.periode}`} className="block focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <div className="h-56 w-full bg-cover bg-center" style={{ backgroundImage: `url(${item.image ? `${BASE_URL}/storage/${item.image}` : '/images/logo.png'})` }} role="img" aria-label={`Periode ${item.periode}`} />
