@@ -3,7 +3,6 @@ import MainLayout from '@/Layouts/MainLayout';
 import { Link, Head } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, ArrowRight } from 'lucide-react';
-import { useTheme } from '@/Hooks/useTheme';
 import {
   IconCalendar,
   IconPaper,
@@ -64,7 +63,8 @@ const apiFetch = async (url: string, signal?: AbortSignal) => {
 };
 
 export default function Home() {
-    //   Theme hook
+    //   Theme
+    //@ts-ignore
     const isDark = useSelector((state) => state.theme.isDark);
 
   // Tab states
