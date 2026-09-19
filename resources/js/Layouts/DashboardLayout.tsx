@@ -1,10 +1,8 @@
 import BottomNav from "@/Components/BottomNav";
 import Sidebar from "@/Components/Sidebar";
 import MainLayout from "./MainLayout";
-import { useEffect } from "react";
 import { Head } from "@inertiajs/react";
 import { useSelector } from "react-redux";
-import { Link } from "@inertiajs/react";
 import Unauthorized from "@/Components/Unauthorized";
 
 
@@ -17,7 +15,7 @@ export default function DashboardLayout({
   children,
   title = "Dashboard - Generasi Baru Indonesia",
 }: DashboardLayoutProps) {
-
+//@ts-ignore
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
 
