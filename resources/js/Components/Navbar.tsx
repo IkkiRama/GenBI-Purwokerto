@@ -32,7 +32,6 @@ import {
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IconHamburger } from "@irsyadadl/paranoid";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 const Navbar = () => {
   const { url } = usePage();
@@ -47,6 +46,7 @@ const Navbar = () => {
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    //@ts-ignore
     const { isAuthenticated, user } = useSelector((state) => state.auth);
 
     const isAllEmpty = results &&

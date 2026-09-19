@@ -397,6 +397,7 @@ const Developer = () => {
               <motion.section
                 key={periode}
                 ref={(element) => {
+                    //@ts-ignore
                   sectionRefs.current[periode] = element;
                 }}
                 initial={{ opacity: 0, y: 35 }}

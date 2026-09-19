@@ -32,7 +32,7 @@ export default function SejarahKepengurusan() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'semua' | 'terbaru'>('semua');
-
+    //@ts-ignore
     const isDark = useSelector((state) => state.theme.isDark);
 
     // Sync theme

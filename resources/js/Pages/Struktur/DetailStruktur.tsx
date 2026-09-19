@@ -26,7 +26,7 @@ const DetailStruktur: React.FC<DetailStrukturProps> = ({ periode, namaBidang }) 
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+    //@ts-ignore
     const isDark = useSelector((state) => state.theme.isDark);
 
   // reduced motion

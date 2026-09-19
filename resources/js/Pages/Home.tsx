@@ -138,7 +138,7 @@ export default function Home() {
   // Remove scroll indicator requirement (as requested)
 
   return (
-    <MainLayout isDark={isDark}>
+    <MainLayout>
       <Head>
         <title>GenBI Purwokerto - Generasi Baru Indonesia</title>
         <meta name="description" content="GenBI Purwokerto, komunitas penerima beasiswa Bank Indonesia — kegiatan, program, dan kontribusi untuk generasi muda." />
@@ -154,23 +154,6 @@ export default function Home() {
         </script>
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-
-      {/* Accessibility: skip link */}
-      <a id="skip-to-content" className="sr-only focus:not-sr-only focus:absolute top-4 left-4 z-50 bg-blue-600 text-white px-4 py-2 rounded">
-        Skip to content
-      </a>
-
-      {/* Theme toggle (accessible) */}
-      <div className="fixed right-5 bottom-24 z-50">
-        <button
-          aria-label="Toggle theme"
-          aria-pressed={isDark}
-          onClick={() => setIsDark((s) => !s)}
-          className="flex items-center gap-3 px-4 py-2 rounded-full shadow-md border bg-white/80 dark:bg-gray-800/80 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          <span className="pointer-events-none dark:text-white text-gray-900 font-semibold">{isDark ? '🌞 Light' : '🌙 Dark'}</span>
-        </button>
-      </div>
 
       {/* Main content */}
       <main id="main-content" tabIndex={-1}>
